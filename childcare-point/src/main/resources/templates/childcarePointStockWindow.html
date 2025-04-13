@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    </head>
+    <body>
+		<form th:action="@{/point-execute}" th:object="${userPointKeyForm}" method="post">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+			
+	        <button type="submit">OK</button>
+	        <button type="submit">戻る</button>
+	        <p th:text="${message}"></p>
+	        <table>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="family" value=1>夫婦喧嘩せず一日を終える：1ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="giveMother" value=1>胸のハリなし：1ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="giveMilk" value=1>ミルクを8回与える：1ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="stopCring" value=7>夜の登板：7ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="bath_2players" value=1>沐浴(2人)：1ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="bath_1player" value=7>沐浴(1人)：7ポイント
+	                </td>
+	            </tr>
+	        </table>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    </head>
+    <body>
+		<form th:object="${userPointKeyForm}" method="post">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+			
+	        <button type="submit" formaction="/point-execute">OK</button>
+	        <button type="submit" formaction="/point-menu">戻る</button>
+	        <p th:text="${userPointKeyForm.message}"></p>
+	        <table>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="sushi" value=-30>おすし：30ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="starbacksDrink" value=-15>スタバのフラペチーノ：15ポイント
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <input type="radio" name="newPoint" id="mossShake" value=-15>モスシェイク：15ポイント
+	                </td>
+	            </tr>
+	        </table>
+        </form>
+    </body>
+</html>

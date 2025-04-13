@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    </head>
+    <body>
+		<form th:action="@{/}" method="post">
+			<button type="submit">戻る</button>
+	        <h1>育児ポイント</h1>
+	        現在のポイント
+	        <div th:text="${userPointKeyForm.currentPoint}"></div>
+		</form>
+	       
+	    <form th:action="@{/stock-window}" th:object="${userPointKeyForm}" method="post">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+	        <button type="submit">ためる</button>
+	    </form>
+	    
+	    <form th:action="@{/use-window}" th:object="${userPointKeyForm}"  method="post">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+	        <button type="submit">使う</button>
+        </form>
+    </body>
+</html>
