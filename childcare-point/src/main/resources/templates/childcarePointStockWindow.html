@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
     </head>
     <body>
-		<form th:action="@{/point-execute}" th:object="${userPointKeyForm}" method="post">
+		<form th:object="${userPointKeyForm}" method="post">
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 			
-	        <button type="submit">OK</button>
-	        <button type="submit">戻る</button>
+	        <button type="submit" th:formaction="@{/point-execute">OK</button>
+	        <button type="submit" th:formaction="@{/point-menu">戻る</button>
 	        <p th:text="${message}"></p>
 	        <table>
 	            <tr>
