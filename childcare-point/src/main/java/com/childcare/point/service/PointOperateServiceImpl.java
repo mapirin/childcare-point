@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.childcare.point.dto.UserPointDto;
+import com.childcare.point.entity.PointList;
 import com.childcare.point.entity.UserPoint;
+import com.childcare.point.repository.PointListRepository;
 import com.childcare.point.repository.UserPointRepository;
 
 @Service
@@ -16,9 +18,8 @@ public class PointOperateServiceImpl {
 	@Autowired
 	private UserPointRepository userPointRepository;
 	
-//	@Autowired
-//	public UserPoint userPoint;
-	
+	@Autowired
+	private PointListRepository pointListRepository;
 	/*
 	 * 
 	 */
@@ -35,12 +36,8 @@ public class PointOperateServiceImpl {
 	@Transactional
 	public void updatePoint(UserPointDto userPointDto) {
 		//recordIdとupdateTimestampを生成
-//		String recordId = String.valueOf(System.currentTimeMillis());
+		String recordId = String.valueOf(System.currentTimeMillis());
 		LocalDateTime updateTimestamp = LocalDateTime.now();
-
-		System.out.println(userPointDto.getUserName());
-		System.out.println(userPointDto.getPoint());
-		System.out.println(updateTimestamp);
 		
 		//USER_POINT TBL用のBEANにデータ設定
 		UserPoint userPoint = new UserPoint();
@@ -51,13 +48,17 @@ public class PointOperateServiceImpl {
 		insertUserPoint(userPoint);
 		
 		//POINT_LIST TBL用のBEANにデータ設定
-//		pointList.setRecordId(recordId);
-//		pointList.setUserName(pointForm.getUserName());
-//		pointList.setPointId(pointForm.getPointId());
-//		pointList.setPoint(pointForm.getPoint());
-//		pointList.setUpdateTimestamp(updateTimestamp);
-//		
-//		pointListMapper.insertPointList(pointList);
+		PointList pointList = new PointList();
+		pointList.setRecordId(recordId);
+		pointList.setUserName(userPointDto.getUserName());
+		pointList.setPointId(userPointDto.getPointId());
+		pointList.setPoint(userPointDto.getPoint());
+		pointList.setUpdateTimestamp(updateTimestamp);
+		
+		System.out.println(pointList.getRecordId());
+		System.out.println(pointList.getPointId());
+		
+		insertPointList(pointList);
 	}
 	
 	/*
@@ -65,5 +66,12 @@ public class PointOperateServiceImpl {
 	 */
 	public void insertUserPoint(UserPoint userPoint) {
 		userPointRepository.save(userPoint);
+	}
+	
+	/*
+	 * 「ためる」「つかう」ボタン押下時処理後、ユーザのPOINT_LIST TBLレコードを最新ポイントで登録
+	 */
+	public void insertPointList(PointList pointList) {
+		pointListRepository.save(pointList);
 	}
 }

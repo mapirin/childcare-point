@@ -1,14 +1,16 @@
 package com.childcare.point.dto;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
-@Data
 @Component
-public class UserPointCalcDto {
+@Data
+public class PointListDataDto {
 
 	private String userName;
 	private int currentPoint;
-	private String selectedRadioData;
+	private List<SelectPointListDto> selectPointList;
 }

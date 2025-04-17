@@ -9,23 +9,23 @@
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 			
-	        <button type="submit" th:formaction="/point-execute">OK</button>
-	        <button type="submit" th:formaction="/point-menu">戻る</button>
+	        <button type="submit" th:formaction="@{/point-execute}">OK</button>
+	        <button type="submit" th:formaction="@{/point-menu}">戻る</button>
 	        <p th:text="${userPointKeyForm.message}"></p>
 	        <table>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="sushi" value=-30>おすし：30ポイント
+	                    <input type="radio" name="selectedRadioData" value="-30,sushi">おすし：30ポイント
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="starbacksDrink" value=-15>スタバのフラペチーノ：15ポイント
+	                    <input type="radio" name="selectedRadioData" value="-15,starbacksDrink">スタバのフラペチーノ：15ポイント
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="mossShake" value=-15>モスシェイク：15ポイント
+	                    <input type="radio" name="selectedRadioData" value="-15,mossShake">モスシェイク：15ポイント
 	                </td>
 	            </tr>
 	        </table>

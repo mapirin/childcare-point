@@ -9,5 +9,6 @@ import lombok.Data;
 public class UserPointDto {
 
 	private String userName;
+	private String pointId;
 	private int point;
 }

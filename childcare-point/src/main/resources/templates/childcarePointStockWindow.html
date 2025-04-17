@@ -9,38 +9,38 @@
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 			
-	        <button type="submit" th:formaction="@{/point-execute">OK</button>
-	        <button type="submit" th:formaction="@{/point-menu">戻る</button>
+	        <button type="submit" th:formaction="@{/point-execute}">OK</button>
+	        <button type="submit" th:formaction="@{/point-menu}">戻る</button>
 	        <p th:text="${message}"></p>
 	        <table>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="family" value=1>夫婦喧嘩せず一日を終える：1ポイント
+	                    <input type="radio" name="selectedRadioData" value="1,family">夫婦喧嘩せず一日を終える：1ポイント 
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="giveMother" value=1>胸のハリなし：1ポイント
+	                    <input type="radio" name="selectedRadioData" value="1,giveMother">胸のハリなし：1ポイント
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="giveMilk" value=1>ミルクを8回与える：1ポイント
+	                    <input type="radio" name="selectedRadioData" value="1,giveMilk">ミルクを8回与える：1ポイント
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="stopCring" value=7>夜の登板：7ポイント
+	                    <input type="radio" name="selectedRadioData" value="7,stopCring">夜の当番：7ポイント
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="bath_2players" value=1>沐浴(2人)：1ポイント
+	                    <input type="radio" name="selectedRadioData" value="1,bath_2players">沐浴(2人)：1ポイント
 	                </td>
 	            </tr>
 	            <tr>
 	                <td>
-	                    <input type="radio" name="newPoint" id="bath_1player" value=7>沐浴(1人)：7ポイント
+	                    <input type="radio" name="selectedRadioData" value="7,bath_1player">沐浴(1人)：7ポイント
 	                </td>
 	            </tr>
 	        </table>
