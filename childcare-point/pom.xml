@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.childcare</groupId>
 	<artifactId>childcare-point</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>childcare-point</name>
 	<description>Baby-point project for Spring Boot</description>
 	<url/>
