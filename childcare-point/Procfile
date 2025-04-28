@@ -1,1 +1,1 @@
-web: java -jar target/chilecare-point-1.0.0-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/childcare-point-1.0.0-SNAPSHOT.jar
