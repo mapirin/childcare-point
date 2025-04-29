@@ -1,11 +1,14 @@
 package com.childcare.point.web;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.childcare.point.dto.PointListDataDto;
@@ -34,7 +37,7 @@ public class ChildcarePointController {
 	 * タイトル画面
 	 * @return
 	 */
-	@RequestMapping(value = "/")
+	@GetMapping(value = "/")
 	public String showPageTitle() {
 		return "childcarePointTitle";
 	}
@@ -45,8 +48,10 @@ public class ChildcarePointController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "/point-menu")
+	@GetMapping(value = "/menu")
 	public String showPageMenu(@RequestParam("userName") String userName, Model model) {
+		System.out.println(userName);
+
 		int currentPoint = pointOperateServiceImpl.selectPoint(userName);
 
 		userPointKeyForm.setUserName(userName);
@@ -62,10 +67,45 @@ public class ChildcarePointController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping(value = "/point-list")
+	@GetMapping(value = "/list")
 	public String showPageList(@RequestParam("userName") String userName, Model model) {
-		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListData(userName);
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForInit(userName);
+		model.addAttribute("pointListDataDto", pointListDataDto);
+		return "childcarePointList";
+	}
 
+	/**
+	 * 履歴画面(前日)
+	 * @param userName
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/list/yesterday")
+	public String showPageListYesterday(@RequestParam("userName") String userName,
+			@RequestParam("updateDate") String updateDate, Model model) {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf).minusDays(1);
+		updateDate = tmpUpdateDate.format(dtf);
+		
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
+		model.addAttribute("pointListDataDto", pointListDataDto);
+		return "childcarePointList";
+	}
+
+	/**
+	 * 履歴画面(翌日)
+	 * @param userName
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/list/tomorrow")
+	public String showPageListTomorrow(@RequestParam("userName") String userName,
+			@RequestParam("updateDate") String updateDate, Model model) {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf).plusDays(1);
+		updateDate = tmpUpdateDate.format(dtf);
+
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
 	}
@@ -76,7 +116,7 @@ public class ChildcarePointController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/stock-window")
+	@PostMapping("/stock")
 	public String showWindowStock(@ModelAttribute("userPointKeyForm") UserPointKeyForm userPointKeyForm, Model model) {
 		model.addAttribute("userPointKeyForm", userPointKeyForm);
 		return "childcarePointStockWindow";
@@ -88,19 +128,25 @@ public class ChildcarePointController {
 	 * @param model
 	 * @return
 	 */
-	@PostMapping("/use-window")
+	@PostMapping("/use")
 	public String showWindowUse(@ModelAttribute("userPointKeyForm") UserPointKeyForm userPointKeyForm, Model model) {
 		model.addAttribute("userPointKeyForm", userPointKeyForm);
 		return "childcarePointUseWindow";
 	}
 
-	@PostMapping("/point-execute")
+	/**
+	 * ためる・つかう画面OK押下時処理
+	 * @param userPointCalcDto
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/update")
 	public String showPageBackMenu(@ModelAttribute("userPointCalcDto") UserPointCalcDto userPointCalcDto, Model model) {
 
 		// 処理準備
 		String[] selectedRadioData = userPointCalcDto.getSelectedRadioData().split(",");
 		int newPoint = userPointCalcDto.getCurrentPoint() + Integer.parseInt(selectedRadioData[0]);
-		
+
 		// エラー処理
 		if (newPoint < 0) {
 			String message = "ポイントが足りません。";
@@ -114,7 +160,7 @@ public class ChildcarePointController {
 		userPointDto.setPointId(selectedRadioData[1]);
 		userPointDto.setPoint(newPoint);
 		System.out.println(userPointDto.getPoint());
-		
+
 		pointOperateServiceImpl.updatePoint(userPointDto);
 
 		// 検索処理

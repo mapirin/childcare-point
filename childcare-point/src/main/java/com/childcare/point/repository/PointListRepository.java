@@ -16,6 +16,7 @@ public interface PointListRepository extends JpaRepository<PointList, String> {
 			+ "INNER JOIN PointNameMaster pnm "
 			+ "ON pl.pointId = pnm.pointMasterId "
 			+ "WHERE pl.userName = :userName "
+			+ "AND TO_CHAR(pl.updateTimestamp, 'yyyy/MM/dd') = :updateDate "
 			+ "ORDER BY pl.updateTimestamp DESC")
-	List<SelectPointListDto> findSelectpointListByUserName(@Param("userName")String userName);
+	List<SelectPointListDto> findSelectpointListByUserName(@Param("userName")String userName, @Param("updateDate")String updateDate);
 }

@@ -9,8 +9,8 @@
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 			
-	        <button type="submit" th:formaction="@{/point-execute}">OK</button>
-	        <button type="submit" th:formaction="@{/point-menu}">戻る</button>
+	        <button type="submit" th:formaction="@{/update}">OK</button>
+	        <button type="submit" th:formaction="@{/menu}">戻る</button>
 	        <p th:text="${userPointKeyForm.message}"></p>
 	        <table>
 	            <tr>

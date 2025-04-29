@@ -5,24 +5,27 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
     </head>
     <body>
-		<form th:action="@{/point-menu}" th:object="${pointListDataDto}" method="post">
+		<form th:object="${pointListDataDto}" method="get">
 			<input type="hidden" th:field="*{userName}"/>
-			<button type="submit">戻る</button>
+			<button type="submit" th:formaction="@{/menu}">戻る</button>
+
+			<button type="submit" th:formaction="@{/list/yesterday}">＜</button>
+			<input type="text" th:field="*{updateDate}"/>
+			<button type="submit" th:formaction="@{/list/tomorrow}">＞</button>
 		</form>
-	       
+		
 		<table border="1">
+
 			<thead>
 				<tr>
 					<th>ポイント名称</th>
 			       	<th>ポイント</th>
-			        <th>実行日時</th>
 			    </tr>
 		    </thead>
 		    <tbody>
 	            <tr th:each="list : ${pointListDataDto.selectPointList}">
 	                <td th:text="${list.pointName}"></td>
 	                <td th:text="${list.point}"></td>
-	                <td th:text="${list.updateTimestamp}"></td>
 	            </tr>
 	        </tbody>
         </table>

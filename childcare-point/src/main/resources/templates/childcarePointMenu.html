@@ -5,22 +5,22 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
     </head>
     <body>
-		<form th:object="${userPointKeyForm}" method="post">
+		<form th:object="${userPointKeyForm}" method="get">
 			<button type="submit" th:formaction="@{/}">戻る</button>
-			<button type="submit" th:formaction="@{/point-list}">履歴</button>
+			<button type="submit" th:formaction="@{/list}">履歴</button>
 			<input type="hidden" th:field="*{userName}"/>
 	        <h1>育児ポイント</h1>
 	        現在のポイント
 	        <div th:text="${userPointKeyForm.currentPoint}"></div>
 		</form>
 	       
-	    <form th:action="@{/stock-window}" th:object="${userPointKeyForm}" method="post">
+	    <form th:action="@{/stock}" th:object="${userPointKeyForm}" method="post">
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 	        <button type="submit">ためる</button>
 	    </form>
 	    
-	    <form th:action="@{/use-window}" th:object="${userPointKeyForm}"  method="post">
+	    <form th:action="@{/use}" th:object="${userPointKeyForm}"  method="post">
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 	        <button type="submit">使う</button>
