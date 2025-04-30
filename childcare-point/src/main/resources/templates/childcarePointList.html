@@ -7,27 +7,40 @@
     <body>
 		<form th:object="${pointListDataDto}" method="get">
 			<input type="hidden" th:field="*{userName}"/>
-			<button type="submit" th:formaction="@{/menu}">戻る</button>
-
+			<div>
+				<button type="submit" th:formaction="@{/menu}">戻る</button>
+			</div>
 			<button type="submit" th:formaction="@{/list/yesterday}">＜</button>
 			<input type="text" th:field="*{updateDate}"/>
 			<button type="submit" th:formaction="@{/list/tomorrow}">＞</button>
-		</form>
-		
-		<table border="1">
-
-			<thead>
-				<tr>
-					<th>ポイント名称</th>
-			       	<th>ポイント</th>
-			    </tr>
-		    </thead>
-		    <tbody>
-	            <tr th:each="list : ${pointListDataDto.selectPointList}">
-	                <td th:text="${list.pointName}"></td>
-	                <td th:text="${list.point}"></td>
-	            </tr>
-	        </tbody>
-        </table>
+	    </form>
+	    
+	    <form th:object="${pointListDataDto}" method="post">
+			<table border="1">	
+				<thead>
+					<tr>
+						<th></th>
+						<th>For いっちゃん</th>
+				       	<th>Point</th>
+				    </tr>
+			    </thead>
+			    <tbody>
+		            <tr th:each="list: ${pointListDataDto.selectPointList}">
+						<td>
+							<input type="radio" name="selectedRecordId" th:value="${list.recordId}">
+						</td>
+		                <td th:text="${list.pointName}"></td>
+		                <td th:text="${list.point}"></td>
+		            </tr>
+		        </tbody>
+	        </table>
+	        
+	        <div th:if="${pointListDataDto.doDeleteListFlg}">
+				<input type="hidden" name="selectedRecordId" id="selectedRecordId">
+			    <input type="hidden" name="userName" th:value="*{userName}">
+			    <input type="hidden" name="updateDate" th:value="*{updateDate}">
+				<button type="submit" th:formaction="@{/delete}">削除</button>
+			</div>
+        </form>
     </body>
 </html>

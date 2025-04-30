@@ -8,11 +8,13 @@ import lombok.Data;
 @Data
 public class SelectPointListDto {
 
+	private String recordId;
 	private String pointName;
 	private int point;
 	private LocalDateTime updateTimestamp;
 	
-	public SelectPointListDto(String pointName, int point, LocalDateTime updateTimestamp) {
+	public SelectPointListDto(String recordId, String pointName, int point, LocalDateTime updateTimestamp) {
+		this.recordId = recordId;
         this.pointName = pointName;
         this.point = point;
         this.updateTimestamp = updateTimestamp;

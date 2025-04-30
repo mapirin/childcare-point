@@ -13,5 +13,6 @@ public class PointListDataDto {
 	private String userName;
 	private int currentPoint;
 	private String updateDate;
+	private boolean doDeleteListFlg;
 	private List<SelectPointListDto> selectPointList;
 }

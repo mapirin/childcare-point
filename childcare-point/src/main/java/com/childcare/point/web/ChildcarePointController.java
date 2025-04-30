@@ -70,6 +70,7 @@ public class ChildcarePointController {
 	@GetMapping(value = "/list")
 	public String showPageList(@RequestParam("userName") String userName, Model model) {
 		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForInit(userName);
+		pointListDataDto.setDoDeleteListFlg(true);
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
 	}
@@ -86,7 +87,7 @@ public class ChildcarePointController {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf).minusDays(1);
 		updateDate = tmpUpdateDate.format(dtf);
-		
+
 		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
@@ -105,7 +106,45 @@ public class ChildcarePointController {
 		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf).plusDays(1);
 		updateDate = tmpUpdateDate.format(dtf);
 
+		boolean doDeleteListFlg = false;
+		LocalDate ld = LocalDate.now();
+
+		// チェック処理
+		if (updateDate.equals(ld.format(dtf))) {
+			doDeleteListFlg = true;
+		}
+
 		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
+		pointListDataDto.setDoDeleteListFlg(doDeleteListFlg);
+		model.addAttribute("pointListDataDto", pointListDataDto);
+		return "childcarePointList";
+	}
+
+	/**
+	 * 履歴画面削除押下時処理
+	 * @param userPointCalcDto
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/delete")
+	public String deletePointList(@RequestParam("selectedRecordId") String recordId,
+			@RequestParam("userName") String userName, @RequestParam("updateDate") String updateDate, Model model) {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		LocalDate ld = LocalDate.now();
+
+		boolean doDeleteListFlg = false;
+
+		// チェック処理
+		if (updateDate.equals(ld.format(dtf))) {
+			doDeleteListFlg = true;
+		}
+		// 削除処理
+		pointListDataServiceImpl.delete(userName,
+				recordId);
+
+		// 返却処理
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
+		pointListDataDto.setDoDeleteListFlg(doDeleteListFlg);
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
 	}
@@ -141,7 +180,7 @@ public class ChildcarePointController {
 	 * @return
 	 */
 	@PostMapping("/update")
-	public String showPageBackMenu(@ModelAttribute("userPointCalcDto") UserPointCalcDto userPointCalcDto, Model model) {
+	public String updateOk(@ModelAttribute("userPointCalcDto") UserPointCalcDto userPointCalcDto, Model model) {
 
 		// 処理準備
 		String[] selectedRadioData = userPointCalcDto.getSelectedRadioData().split(",");

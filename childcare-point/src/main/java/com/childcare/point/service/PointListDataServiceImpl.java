@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.childcare.point.dto.PointListDataDto;
 import com.childcare.point.repository.PointListRepository;
@@ -54,5 +55,15 @@ public class PointListDataServiceImpl {
 		pointListDataDto.setSelectPointList(pointListRepository.findSelectpointListByUserName(userName, updateDate));
 
 		return pointListDataDto;
+	}
+	
+	/**
+	 * 履歴データ削除処理
+	 */
+	@Transactional
+	public void delete(String userName, String recordId) {
+		recordId = recordId.replace(",", "");
+		
+		pointListRepository.deleteByUserNameAndRecordId(userName, recordId);
 	}
 }
