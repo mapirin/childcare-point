@@ -72,7 +72,7 @@ public class ChildcarePointController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping(value = "/list")
+	@GetMapping(value = "/list/today")
 	public String showPageList(@RequestParam("userName") String userName,
 			@RequestParam("currentPoint") int currentPoint, Model model) {
 		

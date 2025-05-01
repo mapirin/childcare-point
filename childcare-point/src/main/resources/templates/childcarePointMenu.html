@@ -7,7 +7,7 @@
     <body>
 		<form th:object="${userPointKeyForm}" method="get">
 			<button type="submit" th:formaction="@{/}">戻る</button>
-			<button type="submit" th:formaction="@{/list}">履歴</button>
+			<button type="submit" th:formaction="@{/list/today}">履歴</button>
 			<input type="hidden" th:field="*{userName}"/>
 			<input type="hidden" th:field="*{currentPoint}"/>
 	        <h1>育児ポイント</h1>
