@@ -38,6 +38,7 @@
 	        <div th:if="${pointListDataDto.doDeleteListFlg}">
 				<input type="hidden" name="selectedRecordId" id="selectedRecordId">
 			    <input type="hidden" name="userName" th:value="*{userName}">
+				<input type="hidden" th:field="*{currentPoint}"/>
 			    <input type="hidden" name="updateDate" th:value="*{updateDate}">
 				<button type="submit" th:formaction="@{/delete}">削除</button>
 			</div>

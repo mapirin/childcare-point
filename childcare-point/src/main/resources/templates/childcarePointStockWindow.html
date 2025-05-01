@@ -10,7 +10,6 @@
 			<input type="hidden" th:field="*{currentPoint}"/>
 			
 	        <button type="submit" th:formaction="@{/update}">OK</button>
-	        <button type="submit" th:formaction="@{/menu}">戻る</button>
 	        <p th:text="${message}"></p>
 	        <table>
 	            <tr>
@@ -45,5 +44,10 @@
 	            </tr>
 	        </table>
         </form>
+        <!-->ポイントは新規TBL POINT_MASTERから取得するように修正<-->
+		<form th:object="${userPointKeyForm}" method="get">
+			<input type="hidden" th:field="*{userName}"/>
+	        <button type="submit" th:formaction="@{/menu}">戻る</button>
+	    </form>
     </body>
 </html>

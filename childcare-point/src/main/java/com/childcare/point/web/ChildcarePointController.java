@@ -68,8 +68,11 @@ public class ChildcarePointController {
 	 * @return
 	 */
 	@GetMapping(value = "/list")
-	public String showPageList(@RequestParam("userName") String userName, Model model) {
+	public String showPageList(@RequestParam("userName") String userName,
+			@RequestParam("currentPoint") int currentPoint, Model model) {
 		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForInit(userName);
+
+		pointListDataDto.setCurrentPoint(currentPoint);
 		pointListDataDto.setDoDeleteListFlg(true);
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
@@ -128,7 +131,8 @@ public class ChildcarePointController {
 	 */
 	@PostMapping("/delete")
 	public String deletePointList(@RequestParam("selectedRecordId") String recordId,
-			@RequestParam("userName") String userName, @RequestParam("updateDate") String updateDate, Model model) {
+			@RequestParam("userName") String userName, @RequestParam("currentPoint") int currentPoint,
+			@RequestParam("updateDate") String updateDate, Model model) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDate ld = LocalDate.now();
 
@@ -139,7 +143,7 @@ public class ChildcarePointController {
 			doDeleteListFlg = true;
 		}
 		// 削除処理
-		pointListDataServiceImpl.delete(userName,
+		pointListDataServiceImpl.delete(userName, currentPoint,
 				recordId);
 
 		// 返却処理

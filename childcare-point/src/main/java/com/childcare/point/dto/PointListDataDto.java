@@ -14,5 +14,5 @@ public class PointListDataDto {
 	private int currentPoint;
 	private String updateDate;
 	private boolean doDeleteListFlg;
-	private List<SelectPointListDto> selectPointList;
+	private List<SelectPointListForDsplDataDto> selectPointList;
 }

@@ -6,11 +6,12 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name="point_name_master")
+@Table(name = "point_master")
 @Data
-public class PointNameMaster {
+public class PointMaster {
 
 	@Id
-	private String pointNameMasterId;
-	private String pointName;
+	private String pointMasterId;
+	private String useMethod;
+	private int point;
 }

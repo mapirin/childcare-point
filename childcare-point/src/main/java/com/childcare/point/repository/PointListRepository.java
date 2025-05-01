@@ -8,20 +8,30 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.childcare.point.dto.SelectPointListDto;
+import com.childcare.point.dto.SelectPointListForDsplDataDto;
+import com.childcare.point.dto.SelectPointMasterForDeleteTargetDto;
 import com.childcare.point.entity.PointList;
 
 public interface PointListRepository extends JpaRepository<PointList, String> {
 
-	@Query("SELECT new com.childcare.point.dto.SelectPointListDto(pl.recordId, pnm.pointName, pl.point, pl.updateTimestamp) "
+	@Query("SELECT new com.childcare.point.dto.SelectPointListForDsplDataDto(pl.recordId, pnm.pointName, pl.point, pl.updateTimestamp) "
 			+ "FROM PointList pl "
 			+ "INNER JOIN PointNameMaster pnm "
-			+ "ON pl.pointId = pnm.pointMasterId "
+			+ "ON pl.pointId = pnm.pointNameMasterId "
 			+ "WHERE pl.userName = :userName "
 			+ "AND TO_CHAR(pl.updateTimestamp, 'yyyy/MM/dd') = :updateDate "
 			+ "ORDER BY pl.updateTimestamp DESC")
-	List<SelectPointListDto> findSelectpointListByUserName(@Param("userName") String userName,
+	List<SelectPointListForDsplDataDto> findSelectPointListByUserNameAndUpdateDate(@Param("userName") String userName,
 			@Param("updateDate") String updateDate);
+
+	@Query("SELECT new com.childcare.point.dto.SelectPointMasterForDeleteTargetDto(pm.useMethod, pm.point) "
+			+ "FROM PointList pl "
+			+ "INNER JOIN PointMaster pm "
+			+ "ON pl.pointId = pm.pointMasterId "
+			+ "WHERE pl.recordId = :recordId "
+			+ "AND pl.userName = :userName ")
+	SelectPointMasterForDeleteTargetDto findSelectPointListByRecordIdAndUserName(
+			@Param("recordId") String recordId, @Param("userName") String userName);
 
 	@Transactional
 	@Modifying

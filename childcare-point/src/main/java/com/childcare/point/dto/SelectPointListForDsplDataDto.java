@@ -6,14 +6,14 @@ import lombok.Data;
 
 //@Component
 @Data
-public class SelectPointListDto {
+public class SelectPointListForDsplDataDto {
 
 	private String recordId;
 	private String pointName;
 	private int point;
 	private LocalDateTime updateTimestamp;
 	
-	public SelectPointListDto(String recordId, String pointName, int point, LocalDateTime updateTimestamp) {
+	public SelectPointListForDsplDataDto(String recordId, String pointName, int point, LocalDateTime updateTimestamp) {
 		this.recordId = recordId;
         this.pointName = pointName;
         this.point = point;
