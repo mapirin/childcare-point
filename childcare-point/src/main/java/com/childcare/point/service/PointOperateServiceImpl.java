@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.childcare.point.bean.PrepareUpdateDataBean;
+import com.childcare.point.dto.UserPointCalcDto;
 import com.childcare.point.dto.UserPointDto;
 import com.childcare.point.entity.PointList;
 import com.childcare.point.entity.UserPoint;
@@ -16,17 +18,31 @@ import com.childcare.point.repository.UserPointRepository;
 public class PointOperateServiceImpl {
 
 	@Autowired
+	private PrepareUpdateDataBean prepareUpdateDataBean;
+	
+	@Autowired
 	private UserPointRepository userPointRepository;
 	
 	@Autowired
 	private PointListRepository pointListRepository;
-	/*
-	 * 
+	
+	/**
+	 * 「メニュー」画面遷移時に遷移ユーザをもとにポイントを取得
 	 */
 	public int selectPoint(String userName) {
 		
 		int currentPoint = userPointRepository.findByUserName(userName).getPoint();
 		return currentPoint;
+	}
+	
+	/**
+	 * 「ためる」「つかう」画面のOK時チェック用データ準備処理
+	 */
+	public PrepareUpdateDataBean prepareUpdateData(UserPointCalcDto userPointCalcDto) {
+		prepareUpdateDataBean.setSelectedRadioData(userPointCalcDto.getSelectedRadioData().split(","));
+		prepareUpdateDataBean.setNewPoint(userPointCalcDto.getCurrentPoint() + Integer.parseInt(prepareUpdateDataBean.getSelectedRadioData()[0]));
+		
+		return prepareUpdateDataBean;
 	}
 	
 	/**

@@ -12,7 +12,9 @@
 			</div>
 			<button type="submit" th:formaction="@{/list/yesterday}">＜</button>
 			<input type="text" th:field="*{updateDate}"/>
-			<button type="submit" th:formaction="@{/list/tomorrow}">＞</button>
+			<span th:if="${pointListDataDto.doTomorrowMoveFlg}">
+				<button type="submit" th:formaction="@{/list/tomorrow}">＞</button>
+			</span>
 	    </form>
 	    
 	    <form th:object="${pointListDataDto}" method="post">
