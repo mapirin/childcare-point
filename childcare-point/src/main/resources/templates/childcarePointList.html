@@ -5,17 +5,32 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
     </head>
     <body>
-		<form th:object="${pointListDataDto}" method="get">
+		<form th:object="${pointListDataDto}" method="get" th:action="@{/menu}">
 			<input type="hidden" th:field="*{userName}"/>
-			<div>
-				<button type="submit" th:formaction="@{/menu}">戻る</button>
-			</div>
-			<button type="submit" th:formaction="@{/list/yesterday}">＜</button>
-			<input type="text" th:field="*{updateDate}"/>
+			<button type="submit">戻る</button>
+		</form>
+		
+		<form th:object="${pointListDataDto}" method="get" th:action="@{/list/yesterday}">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+			<input type="hidden" th:field="*{updateDate}"/>
+			<button type="submit">＜</button>
+		</form>
+		
+		<form th:object="${pointListDataDto}" method="get" id="updateDateForm" th:action="@{/list/enter}">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+			<input type="text" th:field="*{updateDate}" id="updateDateInput" maxlength="10"/>
+		</form>
+		
+		<form th:object="${pointListDataDto}" method="get" th:action="@{/list/tomorrow}">
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:field="*{currentPoint}"/>
+			<input type="hidden" th:field="*{updateDate}"/>
 			<span th:if="${pointListDataDto.doTomorrowMoveFlg}">
-				<button type="submit" th:formaction="@{/list/tomorrow}">＞</button>
+				<button type="submit">＞</button>
 			</span>
-	    </form>
+		</form>
 	    
 	    <form th:object="${pointListDataDto}" method="post">
 			<table border="1">	
@@ -45,5 +60,8 @@
 				<button type="submit" th:formaction="@{/delete}">削除</button>
 			</div>
         </form>
+        
+        <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+        <script src="childcarePointList.js"></script>
     </body>
 </html>

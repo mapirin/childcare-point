@@ -1,8 +1,5 @@
 package com.childcare.point.web;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,7 +72,7 @@ public class ChildcarePointController {
 	@GetMapping(value = "/list/today")
 	public String showPageList(@RequestParam("userName") String userName,
 			@RequestParam("currentPoint") int currentPoint, Model model) {
-		
+
 		//履歴データ取得
 		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForInit(userName);
 
@@ -98,16 +95,14 @@ public class ChildcarePointController {
 	 */
 	@GetMapping(value = "/list/yesterday")
 	public String showPageListYesterday(@RequestParam("userName") String userName,
+			@RequestParam("currentPoint") int currentPoint,
 			@RequestParam("updateDate") String updateDate, Model model) {
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf).minusDays(1);
-		updateDate = tmpUpdateDate.format(dtf);
 
 		//履歴データ取得
-		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
-		
-		pointListDataDto.setDoTomorrowMoveFlg(true);
-		pointListDataDto.setDoDeleteListFlg(false);
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForChange(userName,
+				currentPoint, updateDate,
+				"1");
+
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
 	}
@@ -124,29 +119,40 @@ public class ChildcarePointController {
 	 */
 	@GetMapping(value = "/list/tomorrow")
 	public String showPageListTomorrow(@RequestParam("userName") String userName,
+			@RequestParam("currentPoint") int currentPoint,
 			@RequestParam("updateDate") String updateDate, Model model) {
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf).plusDays(1);
-		updateDate = tmpUpdateDate.format(dtf);
-
-		boolean doTomorrowMoveFlg = false;
-		boolean doDeleteListFlg = false;
-		LocalDate ld = LocalDate.now();
-
-		// 翌日遷移可否チェック処理
-		if (!updateDate.equals(ld.format(dtf))) {
-			doTomorrowMoveFlg = true;
-		}
-		// 削除可否チェック処理
-		if (updateDate.equals(ld.format(dtf))) {
-			doDeleteListFlg = true;
-		}
 		
 		//履歴データ取得
-		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
-		
-		pointListDataDto.setDoTomorrowMoveFlg(doTomorrowMoveFlg);
-		pointListDataDto.setDoDeleteListFlg(doDeleteListFlg);
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForChange(userName,
+				currentPoint, updateDate,
+				"2");
+
+		model.addAttribute("pointListDataDto", pointListDataDto);
+		return "childcarePointList";
+	}
+
+	/**
+	 * 履歴画面(入力)
+	 * 
+	 * 日付入力テキストボックスで入力した日付のデータを取得する
+	 * 
+	 * doTomorrowMoveFlgとdoDeleteListFlgは動的に変化する
+	 * 履歴画面および履歴画面(前日)のルールが適用される
+	 * 
+	 * @param userName
+	 * @param model
+	 * @return
+	 */
+	@GetMapping(value = "/list/enter")
+	public String showPageListEnter(@RequestParam("userName") String userName,
+			@RequestParam("currentPoint") int currentPoint,
+			@RequestParam("updateDate") String updateDate, Model model) {
+				
+		//履歴データ取得
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForChange(userName,
+				currentPoint, updateDate,
+				"3");
+
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
 	}
@@ -166,15 +172,16 @@ public class ChildcarePointController {
 	public String deletePointList(@RequestParam("selectedRecordId") String recordId,
 			@RequestParam("userName") String userName, @RequestParam("currentPoint") int currentPoint,
 			@RequestParam("updateDate") String updateDate, Model model) {
-		
+
 		// 削除処理
 		pointListDataServiceImpl.delete(userName, currentPoint,
 				recordId);
 
 		// 返却処理
-		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataFor(userName, updateDate);
-		pointListDataDto.setDoTomorrowMoveFlg(false);
-		pointListDataDto.setDoDeleteListFlg(true);
+		PointListDataDto pointListDataDto = pointListDataServiceImpl.selectPointListDataForChange(userName,
+				currentPoint, updateDate,
+				"4");
+		
 		model.addAttribute("pointListDataDto", pointListDataDto);
 		return "childcarePointList";
 	}

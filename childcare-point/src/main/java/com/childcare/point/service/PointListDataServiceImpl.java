@@ -20,7 +20,7 @@ public class PointListDataServiceImpl {
 
 	@Autowired
 	private UserPointRepository userPointRepository;
-	
+
 	@Autowired
 	public PointListRepository pointListRepository;
 
@@ -28,16 +28,19 @@ public class PointListDataServiceImpl {
 	 * 履歴データ取得処理(初期表示時)
 	 * 
 	 * 処理時のシステム日をyyyy/MM/dd形式に変換し、対象のデータを取得する
+	 * 
 	 * @param userName
 	 * @return
 	 */
 	public PointListDataDto selectPointListDataForInit(String userName) {
 		PointListDataDto pointListDataDto = new PointListDataDto();
 
-		LocalDate ld = LocalDate.now();
+		//日付変換
+		LocalDate today = LocalDate.now();
 		DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy/MM/dd", Locale.JAPAN);
-		String updateDate = ld.format(sdf);
+		String updateDate = today.format(sdf);
 
+		//取得処理
 		pointListDataDto.setUserName(userName);
 		pointListDataDto.setUpdateDate(updateDate);
 
@@ -48,20 +51,62 @@ public class PointListDataServiceImpl {
 	}
 
 	/**
-	 * 履歴データ取得処理(指定日処理)
+	 * 履歴データ取得処理(日付変更時処理)
 	 * 
-	 * 処理時のシステム日をyyyy/MM/dd形式に変換し、対象のデータを取得する
+	 * 処理時のシステム日をyyyy/MM/dd形式に変換
+	 * 日付変換用のフラグを使用して対象のデータを取得する
+	 * 
 	 * @param userName
-	 * @return
+	 * @param updateDate
+	 * @return PointListDataDto
 	 */
-	public PointListDataDto selectPointListDataFor(String userName, String updateDate) {
+	public PointListDataDto selectPointListDataForChange(String userName, int currentPoint, String updateDate,
+			String changeFlg) {
+		LocalDate today = LocalDate.now();
+		boolean isInputDate =false;
+
+		boolean doTomorrowMoveFlg = false;
+		boolean doDeleteListFlg = false;
+
+		//日付変更処理(前日・翌日)
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd", Locale.JAPAN);
+		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf);
+		
+		switch (changeFlg) {
+		case "1":
+			tmpUpdateDate = tmpUpdateDate.minusDays(1);
+			break;
+		case "2":
+			tmpUpdateDate = tmpUpdateDate.plusDays(1);
+			break;
+		case "3":
+			if(today.isAfter(tmpUpdateDate)) {
+			};
+		default:
+			break;
+		}
+		updateDate = tmpUpdateDate.format(dtf);
+
+		//翌日遷移可否チェック処理
+		if (!updateDate.equals(today.format(dtf))) {
+			doTomorrowMoveFlg = true;
+		}
+		//削除可否チェック処理
+		if (updateDate.equals(today.format(dtf))) {
+			doDeleteListFlg = true;
+		}
+
+		//履歴データ取得
 		PointListDataDto pointListDataDto = new PointListDataDto();
-
-		pointListDataDto.setUserName(userName);
-		pointListDataDto.setUpdateDate(updateDate);
-
 		pointListDataDto.setSelectPointList(
 				pointListRepository.findSelectPointListByUserNameAndUpdateDate(userName, updateDate));
+
+		//返却データ設定
+		pointListDataDto.setUserName(userName);
+		pointListDataDto.setCurrentPoint(currentPoint);
+		pointListDataDto.setUpdateDate(updateDate);
+		pointListDataDto.setDoTomorrowMoveFlg(doTomorrowMoveFlg);
+		pointListDataDto.setDoDeleteListFlg(doDeleteListFlg);
 
 		return pointListDataDto;
 	}
@@ -77,23 +122,23 @@ public class PointListDataServiceImpl {
 		//パラメータを使用して、新規TBL POINT_MASTERから削除対処のポイントを取得
 		SelectPointMasterForDeleteTargetDto selectPointMasterForDeleteTargetDto = pointListRepository
 				.findSelectPointListByRecordIdAndUserName(recordId, userName);
-		
+
 		//削除するレコードのポイントを現在ポイントと計算
 		if (selectPointMasterForDeleteTargetDto.getUseMethod().equals("1")) {
 			selectPointMasterForDeleteTargetDto.setPoint(currentPoint - selectPointMasterForDeleteTargetDto.getPoint());
 		} else {
 			selectPointMasterForDeleteTargetDto.setPoint(currentPoint + selectPointMasterForDeleteTargetDto.getPoint());
 		}
-		
+
 		//計算した値でUSER_POINTを更新
 		LocalDateTime updateTimestamp = LocalDateTime.now();
 		UserPoint userPoint = new UserPoint();
 		userPoint.setUserName(userName);
 		userPoint.setPoint(selectPointMasterForDeleteTargetDto.getPoint());
 		userPoint.setUpdateTimestamp(updateTimestamp);
-		
+
 		userPointRepository.save(userPoint);
-		
+
 		//削除
 		pointListRepository.deleteByUserNameAndRecordId(userName, recordId);
 	}
