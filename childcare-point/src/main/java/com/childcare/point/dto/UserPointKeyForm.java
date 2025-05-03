@@ -11,4 +11,5 @@ public class UserPointKeyForm {
 	private String userName;
 	private int currentPoint;
 	private String message;
+	//TODO 
 }

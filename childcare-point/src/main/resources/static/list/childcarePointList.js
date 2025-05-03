@@ -3,58 +3,68 @@
  * 当該jsファイルは「/list」配下のディレクトリに配置
  */
 document.addEventListener("DOMContentLoaded", function() {
-	// HTMLの読み込み完了後に2要素を取得
-	const updateDateForm = document.getElementById("updateDateForm");
+	// テキストボックスの要素
 	const updateDateInput = document.getElementById("updateDateInput");
 
-	if (!updateDateForm || !updateDateInput) {
-		console.error("updateDateForm または updateDateInput が見つかりません！");
-		return;
-	}
+	// 各種ボタン要素
+	const yesterdayButton = document.getElementById("yesterdayButton");
+	const tomorrowButton = document.getElementById("tomorrowButton");
+	const deleteButton = document.getElementById("deleteButton");
 
-	console.log("updateDateForm と updateDateInput が検出されました。");
-
+	// ＜ボタンのイベントリスナー
+	yesterdayButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		fetchListData("/api/list/yesterday", "GET");
+	});
+	
 	// Enterキーのイベントリスナー
-	// バリデーションありsubmitを実行する
 	updateDateInput.addEventListener("keydown", function(event) {
 		if (event.key === "Enter") {
 			event.preventDefault();
-			updateDateForm.requestSubmit();
+
+			if (checkUpdateDate(updateDateInput)) {
+				fetchListData("/api/list/enter", "GET");
+			}
 		}
 	});
 
-	// フォーム送信時のイベントリスナーを追加
-	// 発火されたバリデーションありsubmitを検知し入力日付のチェック処理を実行
-	updateDateForm.addEventListener("submit", function(event) {
+	// ＞ボタンのイベントリスナー 
+	tomorrowButton.addEventListener('click', function(event) {
 		event.preventDefault();
-		validateAndSubmit(updateDateInput);
+		fetchListData("/api/list/tomorrow", "GET");
 	});
+
+	// 削除ボタンのイベントリスナー
+	deleteButton.addEventListener('click', function(event) {
+		event.preventDefault();
+		fetchListData("/api/delete", "POST");
+	})
 
 	/**
 	 * 入力日付のチェックおよび/list/enterエンドポイントへのform送信
 	 * updateDateInputが当該関数のスコープ外でundefinedとなるのを防ぐため、引数に指定
 	 */
-	function validateAndSubmit(updateDateInput) {
+	function checkUpdateDate(updateDateInput) {
 		let inputDate = updateDateInput.value.trim();
 		console.log("入力された日付: " + inputDate);
 
 		// 入力日付の長さが10未満の場合
 		if (inputDate.length < 10) {
 			console.error("無効な日付なので処理を中断: " + inputDate);
-			return;
+			return false;
 		}
 
 		// 入力日付の形式が「YYYY/MM/DD」でない場合
-		if(!/^\d{4}\/\d{2}\/\d{2}$/.test(inputDate)){
+		if (!/^\d{4}\/\d{2}\/\d{2}$/.test(inputDate)) {
 			console.error("無効な日付なので処理を中断: " + inputDate);
-			return;
+			return false;
 		}
-			
+
 		// 入力日付の日にちが"00"または無効な日付の場合
 		let parsedDate = dayjs(inputDate, "YYYY/MM/DD", true);
 		if (parseInt(inputDate.substring(8, 10), 10) === 0 || !parsedDate.isValid()) {
 			console.error("無効な日付なので処理を中断: " + inputDate);
-			return;
+			return false;
 		}
 
 		console.log("有効な日付として処理: " + parsedDate.format("YYYY/MM/DD"));
@@ -63,10 +73,71 @@ document.addEventListener("DOMContentLoaded", function() {
 		let today = dayjs();
 		if (parsedDate.isAfter(today, "day")) {
 			console.error("未来の日付なので処理を中断: " + parsedDate.format("YYYY/MM/DD"));
-			return;
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 */
+	function fetchListData(endpoint, httpMethod) {
+		const userName = document.getElementById("userName").value;
+		const currentPoint = document.getElementById("currentPoint").value;
+		let updateDateInput = document.getElementById("updateDateInput");
+		const doTomorrowMoveFlg = document.getElementById("doTomorrowMoveFlg");
+		const doDeleteListFlg = document.getElementById("doDeleteListFlg");
+		const pointListData = document.getElementById("pointListBody");
+		const recordId = document.querySelector("input[name=selectedRecordId]:checked");
+
+		let params = new URLSearchParams({
+			userName: userName,
+			currentPoint: currentPoint,
+			updateDate: updateDateInput.value
+		});
+
+		if (httpMethod === "POST") {
+			params.append("recordId", recordId.value);
 		}
 
-		console.log("フォーム送信: " + inputDate);
-		updateDateForm.submit();
+
+		fetch(`${endpoint}?${params.toString()}`, {
+			method: httpMethod,
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(responce => {
+				if (!responce.ok) {
+
+				}
+				return responce.json();
+			})
+			.then(data => {
+				updateDateInput.value = data.updateDate;
+
+				// `doTomorrowMoveFlg` の値に基づいてボタンを表示・非表示
+				doTomorrowMoveFlg.value = data.doTomorrowMoveFlg ? "true" : "false";
+				if (tomorrowButton) {
+					tomorrowButton.style.display = data.doTomorrowMoveFlg ? "block" : "none";
+				}
+
+				doDeleteListFlg.value = data.doDeleteListFlg;
+
+				pointListData.innerHTML = "";
+
+				data.selectPointList.forEach(item => {
+					const row = document.createElement("tr");
+					row.innerHTML =
+						`
+							<td>
+								<input type="radio" name="selectedRecordId" value="${item.recordId}">
+							</td>
+			                <td>${item.pointName}</td>
+			                <td>${item.point}</td>
+		            	`;
+					pointListData.appendChild(row);
+				})
+			})
 	}
 });
