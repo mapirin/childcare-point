@@ -15,29 +15,29 @@ public class LineBotScheduler {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
-	
+
 	@Autowired
 	private LineUserRepository lineUserRepository;
-	
+
 	/**
 	 * 定期実行処理
 	 * 
 	 * 毎日18時に送信される
 	 */
-	@Scheduled(cron="0 20 18 * * ?")
-	public  void sendDailyMessage() {
-		String message ="もう入力した？\\n"
+	@Scheduled(cron = "0 20 18 * * ?", zone = "Asia/Tokyo")
+	public void sendDailyMessage() {
+		String message = "もう入力した？\\n"
 				+ "🔗 https://childcare-point-2be5b80a9197.herokuapp.com/";
-		for(LineUser lineUser : lineUserRepository.findAll()) {
-			sendMessage(lineUser.getLineUserId(),message);
+		for (LineUser lineUser : lineUserRepository.findAll()) {
+			sendMessage(lineUser.getLineUserId(), message);
 		}
 	}
-	
+
 	//TODO Serviceクラスに移動
 	private void sendMessage(String userId, String message) {
-		TextMessage textMessage =new TextMessage(message);
-		PushMessage pushMessage =new PushMessage(userId,textMessage);
+		TextMessage textMessage = new TextMessage(message);
+		PushMessage pushMessage = new PushMessage(userId, textMessage);
 		lineMessagingClient.pushMessage(pushMessage);
 	}
-	
+
 }
