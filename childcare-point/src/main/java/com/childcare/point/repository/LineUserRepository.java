@@ -9,5 +9,6 @@ import com.childcare.point.entity.LineUser;
 
 @Repository
 public interface LineUserRepository extends JpaRepository<LineUser,String>{
+	String findByLineUserId(String userId);
 	List<LineUser> findAll();
 }

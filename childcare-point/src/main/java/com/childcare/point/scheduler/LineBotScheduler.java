@@ -21,7 +21,7 @@ public class LineBotScheduler {
 	
 	@Scheduled(cron="0 0 18 * * ?")
 	public  void sendDailyMessage() {
-		String message ="Test";
+		String message ="もう入力した？/n https://childcare-point-2be5b80a9197.herokuapp.com/";
 		for(LineUser lineUser : lineUserRepository.findAll()) {
 			sendMessage(lineUser.getLineUserId(),message);
 		}
