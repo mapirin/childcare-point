@@ -44,7 +44,7 @@ public class LineBotRestController {
 			if ("follow".equals(eventType)) {
 				System.out.println("Follow event received from user: " + userId);
 
-				if (lineUserRepository.findByLineUserId(userId).isEmpty()) {
+				if (lineUserRepository.findByLineUserId(userId) == null) {
 					LineUser lineUser = new LineUser();
 					lineUser.setLineUserId(userId);
 					lineUserRepository.save(lineUser);
