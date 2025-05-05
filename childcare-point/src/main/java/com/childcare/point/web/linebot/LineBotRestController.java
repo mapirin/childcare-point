@@ -32,23 +32,30 @@ public class LineBotRestController {
 
 	@PostMapping("/webhook")
 	public ResponseEntity<String> handleWebhook(@RequestBody Map<String, Object> payload) {
+		System.out.println("Webhook received: " + payload);
+
 		List<Map<String, Object>> events = (List<Map<String, Object>>) payload.get("events");
 
 		for (Map<String, Object> event : events) {
+			String eventType = (String) event.get("type"); // イベントタイプを取得
 			Map<String, Object> source = (Map<String, Object>) event.get("source");
 			String userId = (String) source.get("userId");
 
-			if (lineUserRepository.findByLineUserId(userId).isEmpty()) {
-				LineUser lineUser = new LineUser();
-				lineUser.setLineUserId(userId);
-				lineUserRepository.save(lineUser);
+			if ("follow".equals(eventType)) {
+				System.out.println("Follow event received from user: " + userId);
+
+				if (lineUserRepository.findByLineUserId(userId).isEmpty()) {
+					LineUser lineUser = new LineUser();
+					lineUser.setLineUserId(userId);
+					lineUserRepository.save(lineUser);
+				}
+
+				String message = "早速入力しましょう。/n https://childcare-point-2be5b80a9197.herokuapp.com/";
+				TextMessage textMessage = new TextMessage(message);
+				PushMessage pushMessage = new PushMessage(userId, textMessage);
+				lineMessagingClient.pushMessage(pushMessage);
+
 			}
-
-			String message = "早速入力しましょう。/n https://childcare-point-2be5b80a9197.herokuapp.com/";
-			TextMessage textMessage = new TextMessage(message);
-			PushMessage pushMessage = new PushMessage(userId, textMessage);
-			lineMessagingClient.pushMessage(pushMessage);
-
 		}
 		return ResponseEntity.ok("Webhook Received");
 	}
