@@ -50,11 +50,13 @@ public class LineBotRestController {
 					lineUserRepository.save(lineUser);
 				}
 
-				String message = "早速入力しましょう。/n https://childcare-point-2be5b80a9197.herokuapp.com/";
-				TextMessage textMessage = new TextMessage(message);
-				PushMessage pushMessage = new PushMessage(userId, textMessage);
-				lineMessagingClient.pushMessage(pushMessage);
-
+				// カスタムメッセージ設定用
+//				String message = "🎉 フォローありがとうございます！\n\n"
+//                        + "早速入力しましょう。\n"
+//                        + "🔗 https://childcare-point-2be5b80a9197.herokuapp.com/";;
+//				TextMessage textMessage = new TextMessage(message);
+//				PushMessage pushMessage = new PushMessage(userId, textMessage);
+//				lineMessagingClient.pushMessage(pushMessage);
 			}
 		}
 		return ResponseEntity.ok("Webhook Received");
