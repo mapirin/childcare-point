@@ -40,9 +40,9 @@ public class LineBotRestController {
 			String eventType = (String) event.get("type"); // イベントタイプを取得
 
 			if (eventType.equals("message")) {
-				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/message");
+				return handleRequest(payload, "https://childcare-point-2be5b80a9197.herokuapp.com/api/line/message");
 			} else if (eventType.equals("follow")) {
-				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/init");
+				return handleRequest(payload, "https://childcare-point-2be5b80a9197.herokuapp.com/api/line/init");
 			}
 		}
 		return ResponseEntity.ok("Event processed");
@@ -72,20 +72,17 @@ public class LineBotRestController {
 		List<Map<String, Object>> events = (List<Map<String, Object>>) payload.get("events");
 
 		for (Map<String, Object> event : events) {
-			String eventType = (String) event.get("type"); // イベントタイプを取得
 			Map<String, Object> source = (Map<String, Object>) event.get("source");
 			String userId = (String) source.get("userId");
 
 			// リクエストpayloadのeventTypeが友達登録時(follow)の場合
-			if ("follow".equals(eventType)) {
-				System.out.println("Follow event received from user: " + userId);
+			System.out.println("Follow event received from user: " + userId);
 
-				// はじめて友達登録をする場合
-				if (lineUserRepository.findByLineUserId(userId) == null) {
-					LineUser lineUser = new LineUser();
-					lineUser.setLineUserId(userId);
-					lineUserRepository.save(lineUser);
-				}
+			// はじめて友達登録をする場合
+			if (lineUserRepository.findByLineUserId(userId) == null) {
+				LineUser lineUser = new LineUser();
+				lineUser.setLineUserId(userId);
+				lineUserRepository.save(lineUser);
 			}
 		}
 		return ResponseEntity.ok("Webhook Received");
@@ -98,13 +95,22 @@ public class LineBotRestController {
 	 * @return
 	 */
 	@PostMapping("/message")
-	public ResponseEntity<String> sendResponseChat(@RequestBody Map<String, String> payload) {
-//		String message = payload.get("message");
-		// カスタムメッセージ設定用
-				String message = "あぅ～";
+	public ResponseEntity<String> sendResponseChat(@RequestBody Map<String, Object> payload) {
+		System.out.println("Webhook received: " + payload);
 
-		for (LineUser lineUser : lineUserRepository.findAll()) {
-			lineBotService.sendMessage(lineUser.getLineUserId(), message);
+		//TODO Serviceクラスに移動
+		List<Map<String, Object>> events = (List<Map<String, Object>>) payload.get("events");
+
+		for (Map<String, Object> event : events) {
+			Map<String, Object> source = (Map<String, Object>) event.get("source");
+			String userId = (String) source.get("userId");
+
+			// リクエストpayloadのeventTypeが友達登録時(follow)の場合
+			System.out.println("Follow event received from user: " + userId);
+
+			// カスタムメッセージ設定用
+			String message = "あぅ～";
+			lineBotService.sendMessage(userId, message);
 		}
 		return ResponseEntity.ok("ResponseChat Send");
 	}
