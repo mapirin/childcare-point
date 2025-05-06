@@ -40,9 +40,9 @@ public class LineBotRestController {
 			String eventType = (String) event.get("type"); // イベントタイプを取得
 
 			if (eventType.equals("message")) {
-				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/webhook/message");
+				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/message");
 			} else if (eventType.equals("follow")) {
-				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/webhook/init");
+				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/init");
 			}
 		}
 		return ResponseEntity.ok("Event processed");
