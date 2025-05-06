@@ -52,7 +52,8 @@ public class LineBotRestController {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> request = new HttpEntity(payload, httpHeaders);
+		//LINE BOTのJSON構造からMap<String,Object>型が適切
+		HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, httpHeaders);
 
 		return restTemplate.postForEntity(endpoint, request, String.class);
 
@@ -102,15 +103,17 @@ public class LineBotRestController {
 		List<Map<String, Object>> events = (List<Map<String, Object>>) payload.get("events");
 
 		for (Map<String, Object> event : events) {
-			Map<String, Object> source = (Map<String, Object>) event.get("source");
-			String userId = (String) source.get("userId");
+//			Map<String, Object> source = (Map<String, Object>) event.get("source");
+//			String userId = (String) source.get("userId");
+//
+//			// リクエストpayloadのeventTypeが友達登録時(follow)の場合
+//			System.out.println("Follow event received from user: " + userId);
 
-			// リクエストpayloadのeventTypeが友達登録時(follow)の場合
-			System.out.println("Follow event received from user: " + userId);
+			String replyToken = (String) event.get("replyToken");
 
 			// カスタムメッセージ設定用
-			String message = "あぅ～";
-			lineBotService.sendMessage(userId, message);
+			String responseMessage = "あぅ～";
+			lineBotService.replyMessage(replyToken, responseMessage);
 		}
 		return ResponseEntity.ok("ResponseChat Send");
 	}

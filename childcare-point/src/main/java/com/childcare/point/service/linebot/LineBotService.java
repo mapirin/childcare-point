@@ -23,7 +23,7 @@ public class LineBotService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		httpHeaders.set("Autorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
+		httpHeaders.set("Authorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
 
 		Map<String, Object> requestBody = Map.of(
 				"to", userId,
@@ -33,5 +33,27 @@ public class LineBotService {
 
 		HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, httpHeaders);
 		restTemplate.postForEntity("https://api.line.me/v2/bot/message/push", request, String.class);
+	}
+	
+	/**
+	 * 
+	 * @param replyToken
+	 * @param message
+	 */
+	public void replyMessage(String replyToken, String message) {
+	    RestTemplate restTemplate = new RestTemplate();
+	    HttpHeaders httpHeaders = new HttpHeaders();
+	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+	    httpHeaders.set("Authorization", "Bearer " + System.getenv("CHANNEL_ACCESS_TOKEN"));
+
+	    Map<String, Object> requestBody = Map.of(
+	        "replyToken", replyToken,
+	        "messages", List.of(
+	            Map.of("type", "text", "text", message)
+	        )
+	    );
+
+	    HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, httpHeaders);
+	    restTemplate.postForEntity("https://api.line.me/v2/bot/message/reply", request, String.class);
 	}
 }

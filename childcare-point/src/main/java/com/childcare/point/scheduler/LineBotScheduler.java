@@ -22,7 +22,7 @@ public class LineBotScheduler {
 	 * 
 	 * 毎日18時に送信される
 	 */
-	@Scheduled(cron = "0 00 18 * * ?", zone = "Asia/Tokyo")
+	@Scheduled(cron = "0 15 16 * * ?", zone = "Asia/Tokyo")
 	public void sendDailyMessage() {
 		String message = "もう入力した？\n"
 				+ "🔗 https://childcare-point-2be5b80a9197.herokuapp.com/";
