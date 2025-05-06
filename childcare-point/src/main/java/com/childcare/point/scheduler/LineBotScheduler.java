@@ -6,15 +6,13 @@ import org.springframework.stereotype.Component;
 
 import com.childcare.point.entity.LineUser;
 import com.childcare.point.repository.LineUserRepository;
-import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.model.PushMessage;
-import com.linecorp.bot.model.message.TextMessage;
+import com.childcare.point.service.linebot.LineBotService;
 
 @Component
 public class LineBotScheduler {
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
+	private LineBotService lineBotService;
 
 	@Autowired
 	private LineUserRepository lineUserRepository;
@@ -29,15 +27,7 @@ public class LineBotScheduler {
 		String message = "もう入力した？\n"
 				+ "🔗 https://childcare-point-2be5b80a9197.herokuapp.com/";
 		for (LineUser lineUser : lineUserRepository.findAll()) {
-			sendMessage(lineUser.getLineUserId(), message);
+			lineBotService.sendMessage(lineUser.getLineUserId(), message);
 		}
 	}
-
-	//TODO Serviceクラスに移動
-	private void sendMessage(String userId, String message) {
-		TextMessage textMessage = new TextMessage(message);
-		PushMessage pushMessage = new PushMessage(userId, textMessage);
-		lineMessagingClient.pushMessage(pushMessage);
-	}
-
 }

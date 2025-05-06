@@ -4,17 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.childcare.point.entity.LineUser;
 import com.childcare.point.repository.LineUserRepository;
-import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.model.PushMessage;
-import com.linecorp.bot.model.message.TextMessage;
+import com.childcare.point.service.linebot.LineBotService;
 
 @RestController
 @RequestMapping("/api/line")
@@ -24,10 +26,36 @@ public class LineBotRestController {
 	private final LineUserRepository lineUserRepository;
 
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
+	private LineBotService lineBotService;
 
 	public LineBotRestController(LineUserRepository lineUserRepository) {
 		this.lineUserRepository = lineUserRepository;
+	}
+
+	@PostMapping("/webhook")
+	public ResponseEntity<String> handleWebhook(@RequestBody Map<String, Object> payload) {
+		List<Map<String, Object>> events = (List<Map<String, Object>>) payload.get("events");
+
+		for (Map<String, Object> event : events) {
+			String eventType = (String) event.get("type"); // イベントタイプを取得
+
+			if (eventType.equals("message")) {
+				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/webhook/message");
+			} else if (eventType.equals("follow")) {
+				return handleRequest(payload,"https://childcare-point-2be5b80a9197.herokuapp.com/api/line/webhook/init");
+			}
+		}
+		return ResponseEntity.ok("Event processed");
+	}
+
+	private ResponseEntity<String> handleRequest(Map<String, Object> payload, String endpoint) {
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> request = new HttpEntity(payload, httpHeaders);
+
+		return restTemplate.postForEntity(endpoint, request, String.class);
+
 	}
 
 	/**
@@ -36,8 +64,8 @@ public class LineBotRestController {
 	 * @param payload
 	 * @return
 	 */
-	@PostMapping("/webhook")
-	public ResponseEntity<String> handleWebhook(@RequestBody Map<String, Object> payload) {
+	@PostMapping("/init")
+	public ResponseEntity<String> handleInitUser(@RequestBody Map<String, Object> payload) {
 		System.out.println("Webhook received: " + payload);
 
 		//TODO Serviceクラスに移動
@@ -69,22 +97,14 @@ public class LineBotRestController {
 	 * @param payload
 	 * @return
 	 */
-	@PostMapping("/response")
+	@PostMapping("/message")
 	public ResponseEntity<String> sendResponseChat(@RequestBody Map<String, String> payload) {
-		String message = payload.get("message");
+//		String message = payload.get("message");
 		// カスタムメッセージ設定用
-//		String message = "🎉 フォローありがとうございます！\n\n"
-//                + "早速入力しましょう。\n"
-//                + "🔗 https://childcare-point-2be5b80a9197.herokuapp.com/";;
-//		TextMessage textMessage = new TextMessage(message);
-//		PushMessage pushMessage = new PushMessage(userId, textMessage);
-//		lineMessagingClient.pushMessage(pushMessage);
+				String message = "あぅ～";
 
-		//TODO Serviceクラスに移動
 		for (LineUser lineUser : lineUserRepository.findAll()) {
-			TextMessage textMessage = new TextMessage(message);
-			PushMessage pushMessage = new PushMessage(lineUser.getLineUserId(), textMessage);
-			lineMessagingClient.pushMessage(pushMessage);
+			lineBotService.sendMessage(lineUser.getLineUserId(), message);
 		}
 		return ResponseEntity.ok("ResponseChat Send");
 	}

@@ -9,6 +9,17 @@ import com.childcare.point.entity.LineUser;
 
 @Repository
 public interface LineUserRepository extends JpaRepository<LineUser,String>{
+	/**
+	 * パラメータに指定されたLINEユーザIDをもとに、LINEユーザIDを取得
+	 *　//TODO パラメータのユーザIDが存在するかどうかだけでOKなので修正 
+	 * 
+	 * @param userId
+	 * @return
+	 */
 	String findByLineUserId(String userId);
+	
+	/**
+	 * 友達登録されたすべてのLINEユーザを取得
+	 */
 	List<LineUser> findAll();
 }
