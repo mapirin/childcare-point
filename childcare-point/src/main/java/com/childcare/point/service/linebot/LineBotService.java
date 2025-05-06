@@ -29,7 +29,7 @@ public class LineBotService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		httpHeaders.set("Authorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
+		httpHeaders.set("Authorization", "Bearer " + System.getenv("CHANNEL_ACCESS_TOKEN"));
 		
 		System.out.println(System.getenv("CHANNEL_ACCESS_TOKEN"));
 
@@ -41,9 +41,6 @@ public class LineBotService {
 		HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, httpHeaders);
 		restTemplate.postForEntity("https://api.line.me/v2/bot/message/broadcast", request, String.class);
 
-//		TextMessage textMessage = new TextMessage(message);
-//		PushMessage pushMessage = new PushMessage(userId, textMessage);
-//		lineMessagingClient.pushMessage(pushMessage);
 	}
 
 	/**
