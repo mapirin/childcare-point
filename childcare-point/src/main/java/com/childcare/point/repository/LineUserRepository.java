@@ -16,7 +16,7 @@ public interface LineUserRepository extends JpaRepository<LineUser,String>{
 	 * @param userId
 	 * @return
 	 */
-	String findByLineUserId(String userId);
+	LineUser findByLineUserId(String userId);
 	
 	/**
 	 * 友達登録されたすべてのLINEユーザを取得
