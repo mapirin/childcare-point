@@ -24,7 +24,7 @@ public class LineBotService {
 	 * @param userId
 	 * @param message
 	 */
-	public void sendMessage(String userId, String message) {
+	public void sendMessage( String message) {
 
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -32,7 +32,6 @@ public class LineBotService {
 		httpHeaders.set("Authorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
 
 		Map<String, Object> requestBody = Map.of(
-				"to", userId,
 				"messages", List.of(Map.of(
 						"type", "text",
 						"text", message)));
@@ -57,12 +56,15 @@ public class LineBotService {
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 		httpHeaders.set("Authorization", "Bearer " + System.getenv("CHANNEL_ACCESS_TOKEN"));
 
+		// 指定JSON構造に沿ったリクエストボディ
 		Map<String, Object> requestBody = Map.of(
 				"replyToken", replyToken,
 				"messages", List.of(
 						Map.of("type", "text", "text", message)));
 
 		HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, httpHeaders);
+		
+		// メッセージ受信時の返却用エンドポイントに送信
 		restTemplate.postForEntity("https://api.line.me/v2/bot/message/reply", request, String.class);
 	}
 }
