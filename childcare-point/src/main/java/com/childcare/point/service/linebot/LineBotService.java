@@ -30,6 +30,8 @@ public class LineBotService {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 		httpHeaders.set("Authorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
+		
+		System.out.println(System.getenv("CHANNEL_ACCESS_TOKEN"));
 
 		Map<String, Object> requestBody = Map.of(
 				"messages", List.of(Map.of(
