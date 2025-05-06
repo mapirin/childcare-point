@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.model.PushMessage;
-import com.linecorp.bot.model.message.TextMessage;
 
 @Service
 public class LineBotService {
@@ -28,23 +26,23 @@ public class LineBotService {
 	 */
 	public void sendMessage(String userId, String message) {
 
-		//		RestTemplate restTemplate = new RestTemplate();
-		//		HttpHeaders httpHeaders = new HttpHeaders();
-		//		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		//		httpHeaders.set("Authorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
-		//
-		//		Map<String, Object> requestBody = Map.of(
-		//				"to", userId,
-		//				"messages", List.of(Map.of(
-		//						"type", "text",
-		//						"text", message)));
-		//
-		//		HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, httpHeaders);
-		//		restTemplate.postForEntity("https://api.line.me/v2/bot/message/push", request, String.class);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+		httpHeaders.set("Authorization", "Bearer" + System.getenv("CHANNEL_ACCESS_TOKEN"));
 
-		TextMessage textMessage = new TextMessage(message);
-		PushMessage pushMessage = new PushMessage(userId, textMessage);
-		lineMessagingClient.pushMessage(pushMessage);
+		Map<String, Object> requestBody = Map.of(
+				"to", userId,
+				"messages", List.of(Map.of(
+						"type", "text",
+						"text", message)));
+
+		HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, httpHeaders);
+		restTemplate.postForEntity("https://api.line.me/v2/bot/message/broadcast", request, String.class);
+
+//		TextMessage textMessage = new TextMessage(message);
+//		PushMessage pushMessage = new PushMessage(userId, textMessage);
+//		lineMessagingClient.pushMessage(pushMessage);
 	}
 
 	/**
