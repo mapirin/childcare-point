@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			.map(item => (
 				{
 					pointId: item.getAttribute("data-point-id"),
-					point: parseInt(point, 10) + parseInt(item.getAttribute("data-point"), 10)
+					point: parseInt(item.getAttribute("data-point"), 10)
 				}
 			));
 
@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			},
 			body: JSON.stringify({
 				userName: userName,
+				currentPoint: point,
 				pointData: selectedCheckboxDataList
 			})
 		})
@@ -49,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			})
 			.then(data => {
 				point = data;
-				console.log(data);
 				document.querySelectorAll('input[name="selectedCheckboxData"]:checked').forEach(item => {
 					item.checked = false;
 				})

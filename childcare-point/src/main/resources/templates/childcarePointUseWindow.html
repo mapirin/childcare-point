@@ -10,8 +10,8 @@
 	        <button type="submit" th:formaction="@{/menu}">戻る</button>
 	    </form>
 		<form th:object="${stockAndUseWindowDto}" method="post">
-			<input type="hidden" th:value="*{userName}"/>
-			<input type="hidden" th:value="*{point}"/>
+			<input type="hidden" th:field="*{userName}"/>
+			<input type="hidden" th:value="*{point}" id="point"/>
 			
 	        <button type="submit" id="useOkButton">OK</button>
 	        <p th:text="${message}" class="message"></p>

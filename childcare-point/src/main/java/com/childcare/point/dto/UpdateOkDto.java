@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class UpdateOkDto {
 	private String userName;
+	private int currentPoint;
 	/**
 	 *stockまたはuseエンドポイントでリクエストする「pointIdとpointのリスト」を以下に格納
 	 *JSONのオブジェクト名が「pointData」のため、フィールド名を「pointData」に設定

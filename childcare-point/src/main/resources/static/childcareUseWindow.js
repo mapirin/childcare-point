@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	// HTMLの読み込み完了後に2要素を取得
 	const useOkButton = document.getElementById("useOkButton");
 	const userName = document.querySelector('input[name="userName"]').value;
+	let point = document.getElementById("point").value;
 	const message = document.querySelector('.message');
 
 	// useOkButtonクリックのイベントリスナー
@@ -19,11 +20,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 
 		const pointId = selectedRadio.getAttribute("data-point-id");
-		const currentPoint = parseInt(document.querySelector('input[name="point"]').value, 10);
 		const addPoint = parseInt(selectedRadio.getAttribute("data-point"), 10);
-		const settingPoint = currentPoint - addPoint;
+		const settingPoint = point - addPoint;
 
-		console.log("currentPoint:" + currentPoint);
 		console.log("addPoint:" + addPoint);
 
 		if (settingPoint < 0) {
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 
 		console.log("選択された値: " + pointId);
-		console.log("選択された値: " + settingPoint);
+		console.log("選択された値: " + addPoint);
 
 
 		fetch("/api/update", {
@@ -42,10 +41,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			},
 			body: JSON.stringify({
 				userName: userName,
+				currentPoint: point,
 				pointData: [
 					{
 						pointId: pointId,
-						point: settingPoint
+						point: -addPoint
 					}
 				]
 			})
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				return response.json();
 			})
 			.then(data => {
-				document.querySelector('input[name="point"]').value = data;
+				point = data;
 				message.innerText = "使いました。";
 			})
 	});

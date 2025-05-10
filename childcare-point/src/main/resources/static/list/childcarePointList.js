@@ -14,9 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	// ＜ボタンのイベントリスナー
 	yesterdayButton.addEventListener('click', function(event) {
 		event.preventDefault();
-		fetchListData("/api/list/yesterday", "GET");
+		if (checkUpdateDate(updateDateInput)) {
+			fetchListData("/api/list/yesterday", "GET");
+		}
 	});
-	
+
 	// Enterキーのイベントリスナー
 	updateDateInput.addEventListener("keydown", function(event) {
 		if (event.key === "Enter") {
@@ -31,7 +33,9 @@ document.addEventListener("DOMContentLoaded", function() {
 	// ＞ボタンのイベントリスナー 
 	tomorrowButton.addEventListener('click', function(event) {
 		event.preventDefault();
-		fetchListData("/api/list/tomorrow", "GET");
+		if (checkUpdateDate(updateDateInput)) {
+			fetchListData("/api/list/tomorrow", "GET");
+		}
 	});
 
 	// 削除ボタンのイベントリスナー
@@ -85,8 +89,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		const userName = document.getElementById("userName").value;
 		const currentPoint = document.getElementById("currentPoint").value;
 		let updateDateInput = document.getElementById("updateDateInput");
-		const doTomorrowMoveFlg = document.getElementById("doTomorrowMoveFlg");
-		const doDeleteListFlg = document.getElementById("doDeleteListFlg");
+		let doTomorrowMoveFlg = document.getElementById("doTomorrowMoveFlg");
+		let doDeleteListFlg = document.getElementById("doDeleteListFlg");
 		const pointListData = document.getElementById("pointListBody");
 		const recordId = document.querySelector("input[name=selectedRecordId]:checked");
 
@@ -118,11 +122,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
 				// `doTomorrowMoveFlg` の値に基づいてボタンを表示・非表示
 				doTomorrowMoveFlg.value = data.doTomorrowMoveFlg ? "true" : "false";
+				console.log("＞："+doTomorrowMoveFlg.value);
 				if (tomorrowButton) {
 					tomorrowButton.style.display = data.doTomorrowMoveFlg ? "block" : "none";
 				}
 
-				doDeleteListFlg.value = data.doDeleteListFlg;
+				// `doDeleteListFlg` の値に基づいてボタンを表示・非表示
+				doDeleteListFlg.value = data.doDeleteListFlg ? "true" : "false";
+				console.log("削除："+doDeleteListFlg.value);
+				if (doDeleteListFlg) {
+					doDeleteListFlg.style.display = data.doDeleteListFlg ? "block" : "none";
+				}
 
 				pointListData.innerHTML = "";
 

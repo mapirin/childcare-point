@@ -102,8 +102,10 @@ public class ChildcarePointWindowServiceImpl {
 		userPoint.setUserName(userPointDto.getUserName());
 		userPoint.setPoint(userPointDto.getPoint());
 		userPoint.setUpdateTimestamp(updateTimestamp);
+		
+		System.out.println(userPointDto.getPoint());
 
-		insertUserPoint(userPoint);
+		updateUserPoint(userPoint);
 
 		//POINT_LIST TBL用のBEANにデータ設定
 		PointList pointList = new PointList();
@@ -113,16 +115,13 @@ public class ChildcarePointWindowServiceImpl {
 		pointList.setPoint(userPointDto.getPoint());
 		pointList.setUpdateTimestamp(updateTimestamp);
 
-		System.out.println(pointList.getRecordId());
-		System.out.println(pointList.getPointId());
-
 		insertPointList(pointList);
 	}
 
 	/*
 	 * 「ためる」「つかう」ボタン押下時処理後、ユーザのUSER_POINT TBLレコードを最新ポイントで更新
 	 */
-	public void insertUserPoint(UserPoint userPoint) {
+	public void updateUserPoint(UserPoint userPoint) {
 		userPointRepository.save(userPoint);
 	}
 

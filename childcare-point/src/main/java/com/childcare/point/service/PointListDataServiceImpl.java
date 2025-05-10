@@ -63,7 +63,6 @@ public class PointListDataServiceImpl {
 	public PointListDataDto selectPointListDataForChange(String userName, int currentPoint, String updateDate,
 			String changeFlg) {
 		LocalDate today = LocalDate.now();
-		boolean isInputDate =false;
 
 		boolean doTomorrowMoveFlg = false;
 		boolean doDeleteListFlg = false;
@@ -71,17 +70,22 @@ public class PointListDataServiceImpl {
 		//日付変更処理(前日・翌日)
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd", Locale.JAPAN);
 		LocalDate tmpUpdateDate = LocalDate.parse(updateDate, dtf);
-		
+
 		switch (changeFlg) {
+		// 前日処理なら処理日-1
 		case "1":
 			tmpUpdateDate = tmpUpdateDate.minusDays(1);
 			break;
+		// 翌日処理なら処理日+1
 		case "2":
 			tmpUpdateDate = tmpUpdateDate.plusDays(1);
 			break;
+		
 		case "3":
-			if(today.isAfter(tmpUpdateDate)) {
-			};
+			if (today.isAfter(tmpUpdateDate)) {
+				
+			}
+			break;
 		default:
 			break;
 		}

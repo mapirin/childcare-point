@@ -144,9 +144,11 @@ public class ChildcareRestController {
 	 */
 	@PostMapping("/update")
 	public ResponseEntity<Integer> updateUseOk(@RequestBody UpdateOkDto updateOkDto) {
-		System.out.println("チェック");
-		
+
+		System.out.println(updateOkDto.getCurrentPoint());
+
 		String userName = updateOkDto.getUserName();
+		int addPoint = updateOkDto.getCurrentPoint();
 		List<UpdateOkDetailDto> pointDataList = updateOkDto.getPointData();
 
 		/**
@@ -154,14 +156,16 @@ public class ChildcareRestController {
 		 * 
 		 * pointDataの1要素ごとに更新処理を呼び出している
 		 */
-		for (UpdateOkDetailDto updateOkDetailDto : pointDataList) {
+		for (int i = 0; i < pointDataList.size(); i++) {
+			addPoint = addPoint + pointDataList.get(i).getPoint();
+			
 			UserPointDto userPointDto = new UserPointDto();
 			userPointDto.setUserName(userName);
-			userPointDto.setPointId(updateOkDetailDto.getPointId());
-			userPointDto.setPoint(updateOkDetailDto.getPoint());
-			
-			System.out.println(updateOkDetailDto.getPointId());
-			System.out.println(updateOkDetailDto.getPoint());
+			userPointDto.setPointId(pointDataList.get(i).getPointId());
+			userPointDto.setPoint(addPoint);
+
+			System.out.println(pointDataList.get(i).getPointId());
+			System.out.println(pointDataList.get(i).getPoint());
 
 			childcarePointWindowServiceImpl.updatePoint(userPointDto);
 		}
