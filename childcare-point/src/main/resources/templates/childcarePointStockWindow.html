@@ -9,49 +9,18 @@
 			<input type="hidden" th:field="*{userName}"/>
 	        <button type="submit" th:formaction="@{/menu}">戻る</button>
 	    </form>
-		<form th:object="${userPointKeyForm}" method="post" id="stockOkForm">
+		<form th:object="${stockAndUseWindowDto}" method="post">
 			<input type="hidden" th:field="*{userName}"/>
-			<input type="hidden" th:field="*{currentPoint}"/>
+			<input type="hidden" th:value="*{point}" id="point"/>
 			
-	        <button type="submit" th:formaction="@{/update}" id="stockOkButton">OK</button>
-	        <p th:text="${userPointKeyForm.message}" class="message"></p>
-<!--	        <table>-->
-<!--	            <tr th:each="list: ${userPointKeyForm.selectUpdateDataList}">-->
-<!--	                <td>-->
-<!--	                    <input type="radio" name="selectedRadioData" th:value="${list.pointMasterId}">-->
-<!--	                    <span th:text="${list.pointName + ":" + list.point + "ポイント"}"></span> -->
-<!--	                </td>-->
-<!--	            </tr>-->
-<!--	        </table>-->
+	        <button type="submit" id="stockOkButton">OK</button>
+	        <p th:text="${message}" class="message"></p>
 	        <table>
-	            <tr>
+	            <tr th:each="list: ${stockAndUseWindowDto.stockAndUseWindowDsplDataList}">
 	                <td>
-	                    <input type="radio" name="selectedRadioData" value="1,family">夫婦喧嘩せず一日を終える：1ポイント 
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="1,giveMother">胸のハリなし：1ポイント
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="1,giveMilk">ミルクを8回与える：1ポイント
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="7,stopCring">夜の当番：7ポイント
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="1,bath_2players">沐浴(2人)：1ポイント
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="7,bath_1player">沐浴(1人)：7ポイント
+	                    <input type="checkbox" name="selectedCheckboxData" th:value="${list.pointId}"
+	                    th:attr="data-point-id=${list.pointId}, data-point=${list.point}">
+	                    <span th:text="${list.pointName + '：' + list.point + 'ポイント'}"></span> 
 	                </td>
 	            </tr>
 	        </table>

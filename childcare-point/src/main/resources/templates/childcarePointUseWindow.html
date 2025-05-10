@@ -9,26 +9,18 @@
 			<input type="hidden" th:field="*{userName}"/>
 	        <button type="submit" th:formaction="@{/menu}">戻る</button>
 	    </form>
-		<form th:object="${userPointKeyForm}" method="post" id="useOkForm" >
-			<input type="hidden" th:field="*{userName}"/>
-			<input type="hidden" th:field="*{currentPoint}"/>
+		<form th:object="${stockAndUseWindowDto}" method="post">
+			<input type="hidden" th:value="*{userName}"/>
+			<input type="hidden" th:value="*{point}"/>
 			
-	        <button type="submit" th:formaction="@{/update}" id="useOkButton">OK</button>
-	        <p th:text="${userPointKeyForm.message}" class="message"></p>
+	        <button type="submit" id="useOkButton">OK</button>
+	        <p th:text="${message}" class="message"></p>
 	        <table>
-	            <tr>
+	            <tr th:each="list: ${stockAndUseWindowDto.stockAndUseWindowDsplDataList}">
 	                <td>
-	                    <input type="radio" name="selectedRadioData" value="-30,sushi">おすし：30ポイント
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="-15,starbacksDrink">スタバのフラペチーノ：15ポイント
-	                </td>
-	            </tr>
-	            <tr>
-	                <td>
-	                    <input type="radio" name="selectedRadioData" value="-15,mossShake">モスシェイク：15ポイント
+	                    <input type="radio" name="selectedRadioData" th:value="${list.pointId}" 
+	                    th:attr="data-point-id=${list.pointId}, data-point=${list.point}">
+	                    <span th:text="${list.pointName + '：' + list.point + 'ポイント'}"></span> 
 	                </td>
 	            </tr>
 	        </table>

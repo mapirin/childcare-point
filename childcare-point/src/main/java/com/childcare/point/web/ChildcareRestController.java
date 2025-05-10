@@ -1,26 +1,36 @@
 package com.childcare.point.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.childcare.point.dto.PointListDataDto;
+import com.childcare.point.dto.UpdateOkDetailDto;
+import com.childcare.point.dto.UpdateOkDto;
+import com.childcare.point.dto.UserPointDto;
+import com.childcare.point.dto.UserPointKeyForm;
+import com.childcare.point.service.ChildcarePointWindowServiceImpl;
 import com.childcare.point.service.PointListDataServiceImpl;
-import com.childcare.point.service.PointOperateServiceImpl;
 
 @RestController
 @RequestMapping("/api")
 public class ChildcareRestController {
 
 	@Autowired
-	public PointOperateServiceImpl pointOperateServiceImpl;
+	public ChildcarePointWindowServiceImpl childcarePointWindowServiceImpl;
 
 	@Autowired
 	public PointListDataServiceImpl pointListDataServiceImpl;
+
+	@Autowired
+	public UserPointKeyForm userPointKeyForm;
 
 	/**
 	 * 履歴画面(前日)
@@ -69,7 +79,7 @@ public class ChildcareRestController {
 
 		return ResponseEntity.ok(pointListDataDto);
 	}
-	
+
 	/**
 	 * 履歴画面(入力)
 	 * 
@@ -109,7 +119,7 @@ public class ChildcareRestController {
 	 * @param updateDate
 	 * @return ResponseEntity<PointListDataDto>
 	 */
-	@PostMapping("/delete")
+	@PostMapping("/list/delete")
 	public ResponseEntity<PointListDataDto> deletePointList(@RequestParam String recordId,
 			@RequestParam String userName, @RequestParam int currentPoint,
 			@RequestParam String updateDate) {
@@ -124,5 +134,41 @@ public class ChildcareRestController {
 				"4");
 
 		return ResponseEntity.ok(pointListDataDto);
+	}
+
+	/**
+	 * ためる・つかう画面OK押下時処理
+	 * @param userPointCalcDto
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/update")
+	public ResponseEntity<Integer> updateUseOk(@RequestBody UpdateOkDto updateOkDto) {
+		System.out.println("チェック");
+		
+		String userName = updateOkDto.getUserName();
+		List<UpdateOkDetailDto> pointDataList = updateOkDto.getPointData();
+
+		/**
+		 * 更新処理
+		 * 
+		 * pointDataの1要素ごとに更新処理を呼び出している
+		 */
+		for (UpdateOkDetailDto updateOkDetailDto : pointDataList) {
+			UserPointDto userPointDto = new UserPointDto();
+			userPointDto.setUserName(userName);
+			userPointDto.setPointId(updateOkDetailDto.getPointId());
+			userPointDto.setPoint(updateOkDetailDto.getPoint());
+			
+			System.out.println(updateOkDetailDto.getPointId());
+			System.out.println(updateOkDetailDto.getPoint());
+
+			childcarePointWindowServiceImpl.updatePoint(userPointDto);
+		}
+
+		// 検索処理
+		int currentPoint = childcarePointWindowServiceImpl.selectPoint(userName);
+
+		return ResponseEntity.ok(currentPoint);
 	}
 }

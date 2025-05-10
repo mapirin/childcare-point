@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	// 削除ボタンのイベントリスナー
 	deleteButton.addEventListener('click', function(event) {
 		event.preventDefault();
-		fetchListData("/api/delete", "POST");
+		fetchListData("/api/list/delete", "POST");
 	})
 
 	/**

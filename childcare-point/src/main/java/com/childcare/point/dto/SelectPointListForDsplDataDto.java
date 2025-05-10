@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
-//@Component
 @Data
 public class SelectPointListForDsplDataDto {
 
