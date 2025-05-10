@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="stylesheet" href="/list/childcarePointList.css">
     </head>
     <body>
 		<form th:object="${pointListDataDto}" method="get" th:action="@{/menu}">
@@ -15,11 +16,13 @@
 		<input type="hidden" th:value="${pointListDataDto.updateDate}" id="updateDate"/>
 		<input type="hidden" th:value="${pointListDataDto.doTomorrowMoveFlg}" id="doTomorrowMoveFlg"/>
 		<input type="hidden" th:value="${pointListDataDto.doDeleteListFlg}" id="doDeleteListFlg"/>
-		<button id="yesterdayButton">＜</button>
-		
-		<input type="text" th:field="${pointListDataDto.updateDate}" id="updateDateInput" maxlength="10"/>
-		
-		<button id="tomorrowButton" th:style="${pointListDataDto.doTomorrowMoveFlg ? '' : 'display:none;'}">＞</button>
+		<div id="buttonContainer">
+			<button id="yesterdayButton">＜</button>
+			
+			<input type="text" th:field="${pointListDataDto.updateDate}" id="updateDateInput" maxlength="10"/>
+			
+			<button id="tomorrowButton" th:style="${pointListDataDto.doTomorrowMoveFlg ? '' : 'display:none;'}">＞</button>
+	    </div>
 	    
 		<table border="1">	
 			<thead>

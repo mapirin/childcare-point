@@ -1,0 +1,97 @@
+@charset "UTF-8";
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+}
+
+button {
+    background-color: #ffcc80;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+button:hover {
+    background-color: #ffb74d;
+}
+
+#yesterdayButton,
+#updateDateInput,
+#tomorrowButton {
+    display: inline-block; /* 横並びにする */
+    vertical-align: middle; /* 高さを統一 */
+}
+
+#updateDateInput {
+    width: 150px;
+    text-align: center;
+    margin: 0 10px; /* 左右の余白調整 */
+}
+
+.container {
+    display: flex;
+    align-items: center; /* 高さを揃える */
+    gap: 10px; /* 要素間の余白 */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #ffa726;
+    color: white;
+    font-weight: bold;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody {
+    display: block;
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto;
+}
+
+tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+/* 横並びにする */
+#buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* 要素間の余白 */
+}
+
+/* テキスト入力フィールドの調整 */
+#updateDateInput {
+    width: 150px;
+    text-align: center;
+}
