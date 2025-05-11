@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    </head>
+    <body>
+		<form th:object="${userPointKeyForm}" method="get">
+			<input type="hidden" th:field="*{userName}"/>
+	        <button type="submit" th:formaction="@{/menu}">戻る</button>
+	    </form>
+		<form th:object="${pointMaterConfigDto}" method="post">
+<!--			//TODO jsでボタン押下時の処理を追加-->
+			<input type="hidden" th:field="*{userName}"/>
+			
+	        <button type="submit" id="masterUpdateOkButton">OK</button>
+<!--	        //TODO 表の一番下に新しい項目を登録するための行が追加されるボタンを実装-->
+<!--	        		jsでtr要素を作成し挿入-->
+<!--	        <button type="submit" id="masterUpdateOkButton">新規項目</button>-->
+	        <p th:text="${message}" class="message"></p>
+	        <table border="1">
+	            <tr>
+					<th></th>
+					<th>ポイントID</th>
+					<th>ポイント名</th>
+			       	<th>ためるかつかうか</th>
+			       	<th>ポイント</th>
+			       	<th>有効か無効か</th>
+			    </tr>
+			    <tr th:each="list,status: ${pointMaterConfigDto.pointMaterConfigDsplDataDtoList}">
+					<td>
+						<input type="radio" name="selectedRecordId">
+					</td>
+	                <td><input type="text" th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].pointMasterId}"></td>
+	                <td><input type="text" th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].pointName}"/></td>
+	                <td>
+						<select th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].useMethod}">
+							<option value="1">ためる</option>
+							<option value="2">つかう</option>
+						</select>
+					</td>
+	                <td><input type="number" th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].point}"></td>
+	                <td>
+						<select th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].activeFlg}">
+	                		<option value="1">表示</option>
+							<option value="0">非表示</option>
+						</select>
+	                </td>
+	            </tr>
+	        </table>
+        </form>
+        
+<!--        <script src="childcareStockWindow.js"></script>-->
+    </body>
+</html>

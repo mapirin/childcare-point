@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.childcare.point.bean.PrepareUpdateDataBean;
 import com.childcare.point.dto.StockAndUseWindowDsplDataDto;
 import com.childcare.point.dto.StockAndUseWindowDto;
-import com.childcare.point.dto.UserPointCalcDto;
 import com.childcare.point.dto.UserPointDto;
 import com.childcare.point.dto.UserPointKeyForm;
 import com.childcare.point.entity.PointList;
@@ -24,9 +22,6 @@ public class ChildcarePointWindowServiceImpl {
 
 	private final String USE_METHOD_STOCK = "1";
 	private final String USE_METHOD_USE = "2";
-
-	@Autowired
-	private PrepareUpdateDataBean prepareUpdateDataBean;
 
 	@Autowired
 	private UserPointRepository userPointRepository;
@@ -44,17 +39,6 @@ public class ChildcarePointWindowServiceImpl {
 
 		int currentPoint = userPointRepository.findByUserName(userName).getPoint();
 		return currentPoint;
-	}
-
-	/**
-	 * 「ためる」「つかう」画面のOK時チェック用データ準備処理
-	 */
-	public PrepareUpdateDataBean prepareUpdateData(UserPointCalcDto userPointCalcDto) {
-		prepareUpdateDataBean.setSelectedRadioData(userPointCalcDto.getSelectedRadioData().split(","));
-		prepareUpdateDataBean.setNewPoint(
-				userPointCalcDto.getCurrentPoint() + Integer.parseInt(prepareUpdateDataBean.getSelectedRadioData()[0]));
-
-		return prepareUpdateDataBean;
 	}
 
 	/**

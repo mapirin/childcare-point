@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.childcare.point.bean.PrepareUpdateDataBean;
 import com.childcare.point.dto.PointListDataDto;
+import com.childcare.point.dto.PointMaterConfigDto;
 import com.childcare.point.dto.StockAndUseWindowDto;
 import com.childcare.point.dto.UserPointKeyForm;
 import com.childcare.point.service.ChildcarePointWindowServiceImpl;
+import com.childcare.point.service.PointConfigServiceImpl;
 import com.childcare.point.service.PointListDataServiceImpl;
 
 @Controller
@@ -25,7 +26,7 @@ public class ChildcarePointController {
 	public PointListDataServiceImpl pointListDataServiceImpl;
 
 	@Autowired
-	private PrepareUpdateDataBean prepareUpdateDataBean;
+	public PointConfigServiceImpl pointConfigServiceImpl;
 
 	@Autowired
 	public UserPointKeyForm userPointKeyForm;
@@ -108,5 +109,20 @@ public class ChildcarePointController {
 				.selectUseWindowData(userPointKeyForm);
 		model.addAttribute("stockAndUseWindowDto", stockAndUseWindowDto);
 		return "childcarePointUseWindow";
+	}
+
+	/**
+	 * ポイント設定画面
+	 * @param userPointKeyForm
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/config/point")
+	public String showWindowPointConfig(@ModelAttribute("userPointKeyForm") UserPointKeyForm userPointKeyForm,
+			Model model) {
+		PointMaterConfigDto pointMaterConfigDto = pointConfigServiceImpl
+				.selectPointConfigData(userPointKeyForm.getUserName());
+		model.addAttribute("pointMaterConfigDto", pointMaterConfigDto);
+		return "childcarePointMasterConfig";
 	}
 }

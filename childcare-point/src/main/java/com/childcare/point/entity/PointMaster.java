@@ -16,8 +16,10 @@ public class PointMaster {
 	private String pointMasterId;
 	private String useMethod;
 	private int point;
-	
+	private String activeFlg;
+	private String updateUserId;
+
 	@ManyToOne
-    @JoinColumn(name = "point_name_master_id", referencedColumnName = "pointNameMasterId")
-    private PointNameMaster pointNameMaster;
+	@JoinColumn(name = "point_name_master_id", referencedColumnName = "pointNameMasterId")
+	private PointNameMaster pointNameMaster;
 }
