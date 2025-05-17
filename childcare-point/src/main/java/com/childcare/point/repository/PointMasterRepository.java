@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.childcare.point.dto.PointMaterConfigDsplDataDto;
+import com.childcare.point.dto.PointConfigDsplDataDto;
 import com.childcare.point.dto.StockAndUseWindowDsplDataDto;
 import com.childcare.point.entity.PointMaster;
 
@@ -20,11 +20,11 @@ public interface PointMasterRepository extends JpaRepository<PointMaster, String
 			+ "ORDER BY pm.pointMasterId ")
 	List<StockAndUseWindowDsplDataDto> findAllByUseMethod(@Param("useMethod") String useMethod);
 
-	@Query("SELECT new com.childcare.point.dto.PointMaterConfigDsplDataDto(pm.pointMasterId, pnm.pointName, pm.useMethod, pm.point, pm.activeFlg) "
+	@Query("SELECT new com.childcare.point.dto.PointConfigDsplDataDto(pm.pointMasterId, pnm.pointName, pm.useMethod, pm.point, pm.activeFlg) "
 			+ "FROM PointMaster pm "
 			+ "INNER JOIN PointNameMaster pnm "
 			+ "ON pm.pointMasterId = pnm.pointNameMasterId "
 			+ "ORDER BY pm.pointMasterId ")
-	List<PointMaterConfigDsplDataDto> find();
+	List<PointConfigDsplDataDto> find();
 
 }

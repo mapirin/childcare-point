@@ -9,47 +9,46 @@
 			<input type="hidden" th:field="*{userName}"/>
 	        <button type="submit" th:formaction="@{/menu}">戻る</button>
 	    </form>
-		<form th:object="${pointMaterConfigDto}" method="post">
-<!--			//TODO jsでボタン押下時の処理を追加-->
+		<form th:object="${pointConfigDto}" method="post">
 			<input type="hidden" th:field="*{userName}"/>
 			
 	        <button type="submit" id="masterUpdateOkButton">OK</button>
+	        <button type="button" id="addButton">行追加</button>
 <!--	        //TODO 表の一番下に新しい項目を登録するための行が追加されるボタンを実装-->
 <!--	        		jsでtr要素を作成し挿入-->
 <!--	        <button type="submit" id="masterUpdateOkButton">新規項目</button>-->
 	        <p th:text="${message}" class="message"></p>
 	        <table border="1">
 	            <tr>
-					<th></th>
 					<th>ポイントID</th>
 					<th>ポイント名</th>
-			       	<th>ためるかつかうか</th>
+			       	<th>ポイント種類</th>
 			       	<th>ポイント</th>
-			       	<th>有効か無効か</th>
+			       	<th>表示・非表示</th>
 			    </tr>
-			    <tr th:each="list,status: ${pointMaterConfigDto.pointMaterConfigDsplDataDtoList}">
-					<td>
-						<input type="radio" name="selectedRecordId">
-					</td>
-	                <td><input type="text" th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].pointMasterId}"></td>
-	                <td><input type="text" th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].pointName}"/></td>
-	                <td>
-						<select th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].useMethod}">
-							<option value="1">ためる</option>
-							<option value="2">つかう</option>
-						</select>
-					</td>
-	                <td><input type="number" th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].point}"></td>
-	                <td>
-						<select th:field="*{pointMaterConfigDsplDataDtoList[__${status.index}__].activeFlg}">
-	                		<option value="1">表示</option>
-							<option value="0">非表示</option>
-						</select>
-	                </td>
-	            </tr>
+			    <tbody id="addTable">
+				    <tr th:each="list,status: ${pointConfigDto.pointConfigDsplDataDtoList}">
+		                <td th:text="${list.pointMasterId}"></td>
+		                <td><input type="text" th:field="*{pointConfigDsplDataDtoList[__${status.index}__].pointName}"/></td>
+		                <td>
+							<select th:field="*{pointConfigDsplDataDtoList[__${status.index}__].useMethod}">
+								<option value="1">ためる</option>
+								<option value="2">つかう</option>
+							</select>
+						</td>
+		                <td><input type="number" th:field="*{pointConfigDsplDataDtoList[__${status.index}__].point}"></td>
+		                <td>
+							<select th:field="*{pointConfigDsplDataDtoList[__${status.index}__].activeFlg}">
+		                		<option value="1">表示</option>
+								<option value="0">非表示</option>
+							</select>
+		                </td>
+		                <span style="display: none;" id="insertFlg" data-value="0"></span>
+		            </tr>
+	            </tbody>
 	        </table>
         </form>
         
-<!--        <script src="childcareStockWindow.js"></script>-->
+        <script src="childcarePointMasterConfig.js"></script>
     </body>
 </html>

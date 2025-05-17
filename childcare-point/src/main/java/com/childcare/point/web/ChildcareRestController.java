@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.childcare.point.dto.PointConfigDto;
 import com.childcare.point.dto.PointListDataDto;
-import com.childcare.point.dto.UpdateOkDetailDto;
+import com.childcare.point.dto.UpdateConfigOkDetailDto;
+import com.childcare.point.dto.UpdateConfigOkDto;
 import com.childcare.point.dto.UpdateOkDto;
-import com.childcare.point.dto.UserPointDto;
 import com.childcare.point.dto.UserPointKeyForm;
 import com.childcare.point.service.ChildcarePointWindowServiceImpl;
+import com.childcare.point.service.PointConfigServiceImpl;
 import com.childcare.point.service.PointListDataServiceImpl;
 
 @RestController
@@ -28,6 +30,9 @@ public class ChildcareRestController {
 
 	@Autowired
 	public PointListDataServiceImpl pointListDataServiceImpl;
+
+	@Autowired
+	public PointConfigServiceImpl pointConfigServiceImpl;
 
 	@Autowired
 	public UserPointKeyForm userPointKeyForm;
@@ -148,31 +153,37 @@ public class ChildcareRestController {
 		System.out.println(updateOkDto.getCurrentPoint());
 
 		String userName = updateOkDto.getUserName();
-		int addPoint = updateOkDto.getCurrentPoint();
-		List<UpdateOkDetailDto> pointDataList = updateOkDto.getPointData();
 
-		/**
-		 * 更新処理
-		 * 
-		 * pointDataの1要素ごとに更新処理を呼び出している
-		 */
-		for (int i = 0; i < pointDataList.size(); i++) {
-			addPoint = addPoint + pointDataList.get(i).getPoint();
-			
-			UserPointDto userPointDto = new UserPointDto();
-			userPointDto.setUserName(userName);
-			userPointDto.setPointId(pointDataList.get(i).getPointId());
-			userPointDto.setPoint(addPoint);
-
-			System.out.println(pointDataList.get(i).getPointId());
-			System.out.println(pointDataList.get(i).getPoint());
-
-			childcarePointWindowServiceImpl.updatePoint(userPointDto);
-		}
+		//更新処理
+		childcarePointWindowServiceImpl.updatePoint(updateOkDto);
 
 		// 検索処理
 		int currentPoint = childcarePointWindowServiceImpl.selectPoint(userName);
 
 		return ResponseEntity.ok(currentPoint);
+	}
+
+	/**
+	 * ポイント設定画面OK押下時処理
+	 * @param userPointCalcDto
+	 * @param model
+	 * @return
+	 */
+	@PostMapping("/config/update")
+	public ResponseEntity<PointConfigDto> updateConfigOk(@RequestBody UpdateConfigOkDto updateConfigOkDto) {
+
+		System.out.println(updateConfigOkDto.getUserName());
+
+		String userName = updateConfigOkDto.getUserName();
+		List<UpdateConfigOkDetailDto> insertPointConfigData = updateConfigOkDto.getInsertPointConfigData();
+		List<UpdateConfigOkDetailDto> updatePointConfigData = updateConfigOkDto.getUpdatePointConfigData();
+
+		//更新処理
+		pointConfigServiceImpl.upsertPointConfigData(userName, insertPointConfigData, updatePointConfigData);
+
+		// 検索処理
+		PointConfigDto pointConfigDto = pointConfigServiceImpl.selectPointConfigData(userName);
+
+		return ResponseEntity.ok(pointConfigDto);
 	}
 }

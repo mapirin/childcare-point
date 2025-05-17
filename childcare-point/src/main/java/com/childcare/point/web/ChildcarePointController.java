@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.childcare.point.dto.PointConfigDto;
 import com.childcare.point.dto.PointListDataDto;
-import com.childcare.point.dto.PointMaterConfigDto;
 import com.childcare.point.dto.StockAndUseWindowDto;
 import com.childcare.point.dto.UserPointKeyForm;
 import com.childcare.point.service.ChildcarePointWindowServiceImpl;
@@ -120,9 +120,9 @@ public class ChildcarePointController {
 	@GetMapping("/config/point")
 	public String showWindowPointConfig(@ModelAttribute("userPointKeyForm") UserPointKeyForm userPointKeyForm,
 			Model model) {
-		PointMaterConfigDto pointMaterConfigDto = pointConfigServiceImpl
+		PointConfigDto pointConfigDto = pointConfigServiceImpl
 				.selectPointConfigData(userPointKeyForm.getUserName());
-		model.addAttribute("pointMaterConfigDto", pointMaterConfigDto);
+		model.addAttribute("pointConfigDto", pointConfigDto);
 		return "childcarePointMasterConfig";
 	}
 }

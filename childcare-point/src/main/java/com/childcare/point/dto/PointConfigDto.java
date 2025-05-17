@@ -5,8 +5,8 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class PointMaterConfigDto {
+public class PointConfigDto {
 
 	private String userName;
-	private List<PointMaterConfigDsplDataDto> pointMaterConfigDsplDataDtoList;
+	private List<PointConfigDsplDataDto> pointConfigDsplDataDtoList;
 }

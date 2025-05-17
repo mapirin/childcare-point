@@ -24,13 +24,13 @@ public class LineBotScheduler {
 		lineBotService.sendMessage(message);
 	}
 
-	/**
-	 * 定期実行処理
-	 * 
-	 * 20分ごとに送信される
-	 */
-	@Scheduled(fixedRate = 20 * 60 * 1000)
-	public void avoidSleep() {
-		System.out.println("20分ごとに処理を実行: " + System.currentTimeMillis());
-	}
+//	/**
+//	 * 定期実行処理
+//	 * 
+//	 * 20分ごとに送信される
+//	 */
+//	@Scheduled(fixedRate = 20 * 60 * 1000)
+//	public void avoidSleep() {
+//		System.out.println("20分ごとに処理を実行: " + System.currentTimeMillis());
+//	}
 }

@@ -3,7 +3,7 @@ package com.childcare.point.dto;
 import lombok.Data;
 
 @Data
-public class PointMaterConfigDsplDataDto {
+public class PointConfigDsplDataDto {
 
 	private String pointMasterId;
 	private String pointName;
@@ -11,7 +11,7 @@ public class PointMaterConfigDsplDataDto {
 	private int point;
 	private String activeFlg;
 
-	public PointMaterConfigDsplDataDto(String pointMasterId, String pointName, String useMethod, int point,
+	public PointConfigDsplDataDto(String pointMasterId, String pointName, String useMethod, int point,
 			String activeFlg) {
 		this.pointMasterId = pointMasterId;
 		this.pointName = pointName;

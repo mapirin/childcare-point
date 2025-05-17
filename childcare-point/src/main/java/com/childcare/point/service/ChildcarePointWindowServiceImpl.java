@@ -9,7 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.childcare.point.dto.StockAndUseWindowDsplDataDto;
 import com.childcare.point.dto.StockAndUseWindowDto;
-import com.childcare.point.dto.UserPointDto;
+import com.childcare.point.dto.UpdateOkDetailDto;
+import com.childcare.point.dto.UpdateOkDto;
 import com.childcare.point.dto.UserPointKeyForm;
 import com.childcare.point.entity.PointList;
 import com.childcare.point.entity.UserPoint;
@@ -76,30 +77,64 @@ public class ChildcarePointWindowServiceImpl {
 	 * ポイント表示用更新処理と履歴確認用のTBL登録処理
 	 */
 	@Transactional
-	public void updatePoint(UserPointDto userPointDto) {
+	public void updatePoint(UpdateOkDto updateOkDto) {
 		//recordIdとupdateTimestampを生成
 		String recordId = String.valueOf(System.currentTimeMillis());
 		LocalDateTime updateTimestamp = LocalDateTime.now();
-
-		//USER_POINT TBL用のBEANにデータ設定
-		UserPoint userPoint = new UserPoint();
-		userPoint.setUserName(userPointDto.getUserName());
-		userPoint.setPoint(userPointDto.getPoint());
-		userPoint.setUpdateTimestamp(updateTimestamp);
 		
-		System.out.println(userPointDto.getPoint());
+		String userName = updateOkDto.getUserName();
+		int addPoint = updateOkDto.getCurrentPoint();
+		List<UpdateOkDetailDto> pointDataList = updateOkDto.getPointData();
 
-		updateUserPoint(userPoint);
+		/**
+		 * 更新処理
+		 * 
+		 * pointDataの1要素ごとに更新処理を呼び出している
+		 */
+		for (int i = 0; i < pointDataList.size(); i++) {
+			addPoint = addPoint + pointDataList.get(i).getPoint();
+			
+			//USER_POINT TBL用のBEANにデータ設定
+			UserPoint userPoint = new UserPoint();
+			userPoint.setUserName(userName);
+			userPoint.setPoint(pointDataList.get(i).getPoint());
+			userPoint.setUpdateTimestamp(updateTimestamp);
+			
+			System.out.println(pointDataList.get(i).getPointId());
+			System.out.println(pointDataList.get(i).getPoint());
 
-		//POINT_LIST TBL用のBEANにデータ設定
-		PointList pointList = new PointList();
-		pointList.setRecordId(recordId);
-		pointList.setUserName(userPointDto.getUserName());
-		pointList.setPointId(userPointDto.getPointId());
-		pointList.setPoint(userPointDto.getPoint());
-		pointList.setUpdateTimestamp(updateTimestamp);
+			updateUserPoint(userPoint);
 
-		insertPointList(pointList);
+			//POINT_LIST TBL用のBEANにデータ設定
+			PointList pointList = new PointList();
+			pointList.setRecordId(recordId);
+			pointList.setUserName(userName);
+			pointList.setPointId(pointDataList.get(i).getPointId());
+			pointList.setPoint(pointDataList.get(i).getPoint());
+			pointList.setUpdateTimestamp(updateTimestamp);
+
+			insertPointList(pointList);
+		}
+
+//		//USER_POINT TBL用のBEANにデータ設定
+//		UserPoint userPoint = new UserPoint();
+//		userPoint.setUserName(userPointDto.getUserName());
+//		userPoint.setPoint(userPointDto.getPoint());
+//		userPoint.setUpdateTimestamp(updateTimestamp);
+//		
+//		System.out.println(userPointDto.getPoint());
+//
+//		updateUserPoint(userPoint);
+//
+//		//POINT_LIST TBL用のBEANにデータ設定
+//		PointList pointList = new PointList();
+//		pointList.setRecordId(recordId);
+//		pointList.setUserName(userPointDto.getUserName());
+//		pointList.setPointId(userPointDto.getPointId());
+//		pointList.setPoint(userPointDto.getPoint());
+//		pointList.setUpdateTimestamp(updateTimestamp);
+//
+//		insertPointList(pointList);
 	}
 
 	/*
