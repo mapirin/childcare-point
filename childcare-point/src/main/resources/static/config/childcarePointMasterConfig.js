@@ -4,18 +4,18 @@
 document.addEventListener("DOMContentLoaded", function() {
 	// HTMLの読み込み完了後に2要素を取得
 	const masterUpdateOkButton = document.getElementById("masterUpdateOkButton");
-//	const userName = document.querySelector("input[name='userName']").value;
+	//	const userName = document.querySelector("input[name='userName']").value;
 	const message = document.querySelector('.message');
 
 	const addButton = document.getElementById("addButton");
 
 	addButton.addEventListener("click", function() {
-	    const tableBody = document.getElementById("addTable");
-	    const rowCount = tableBody.rows.length; // 現在の行数を取得
-	
-	    // 新しい行を作成
-	    const newRow = tableBody.insertRow();
-	    newRow.innerHTML = `
+		const tableBody = document.getElementById("addTable");
+		const rowCount = tableBody.rows.length; // 現在の行数を取得
+
+		// 新しい行を作成
+		const newRow = tableBody.insertRow();
+		newRow.innerHTML = `
 	        <td><input type="text" name="pointConfigDsplDataDtoList[${rowCount}].pointMasterId"></td>
 	        <td><input type="text" name="pointConfigDsplDataDtoList[${rowCount}].pointName"></td>
 	        <td>
@@ -38,28 +38,33 @@ document.addEventListener("DOMContentLoaded", function() {
 	// masterUpdateOkButtonクリックのイベントリスナー
 	masterUpdateOkButton.addEventListener("click", function(event) {
 		event.preventDefault();
-		
-		const selectedCheckbox = document.querySelectorAll('input[name="selectedCheckbox"]:checked');
-	
-		if (!selectedCheckbox) {
-			message.innerText = "1つ選択してください。";
-			return;
-		}
-		
-		fetch("/api/update", {
+
+		let rows = document.querySelectorAll("#addTable tr");
+		let upsertDataList = [];
+
+		rows.forEach(row => {
+			let pointMasterId = row.querySelector("td:nth-child(1)").innerText;
+			let pointName = row.querySelector("td:nth-child(2) input").value;
+			let useMethod = row.querySelector("td:nth-child(3) select").value;
+			let point = row.querySelector("td:nth-child(4) input").value;
+			let activeFlg = row.querySelector("td:nth-child(5) select").value;
+
+			upsertDataList.push({
+				pointMasterId: pointMasterId,
+				pointName: pointName,
+				useMethod: useMethod,
+				point: point,
+				activeFlgactiveFlg: activeFlg
+			})
+		});
+
+		fetch("/api/config/update", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				userName: userName,
-				currentPoint: point,
-				pointData: [
-					{
-						pointId: pointId,
-						point: -addPoint
-					}
-				]
+				upsertDataList: upsertDataList
 			})
 		})
 			.then(response => {
@@ -70,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				return response.json();
 			})
 			.then(data => {
+				//TODO 取得データをhtmlにバインド
 				point = data;
 				message.innerText = "使いました。";
 			})
