@@ -24,7 +24,7 @@
 			       	<th>表示・非表示</th>
 			    </tr>
 			    <tbody id="addTable">
-				    <tr th:each="list,status: ${pointConfigDto.pointConfigDsplDataDtoList}">
+				    <tr th:each="list,status: ${pointConfigDto.pointConfigDsplDataDtoList}" th:attr="data-added='false'">
 		                <td th:text="${list.pointMasterId}"></td>
 		                <td><input type="text" th:field="*{pointConfigDsplDataDtoList[__${status.index}__].pointName}"/></td>
 		                <td>
@@ -40,7 +40,6 @@
 								<option value="0">非表示</option>
 							</select>
 		                </td>
-		                <span style="display: none;" id="insertFlg" data-value="0"></span>
 		            </tr>
 	            </tbody>
 	        </table>

@@ -17,6 +17,7 @@ public interface PointMasterRepository extends JpaRepository<PointMaster, String
 			+ "INNER JOIN PointNameMaster pnm "
 			+ "ON pm.pointMasterId = pnm.pointNameMasterId "
 			+ "WHERE pm.useMethod = :useMethod "
+			+ "AND pm.activeFlg = '1'" 
 			+ "ORDER BY pm.pointMasterId ")
 	List<StockAndUseWindowDsplDataDto> findAllByUseMethod(@Param("useMethod") String useMethod);
 

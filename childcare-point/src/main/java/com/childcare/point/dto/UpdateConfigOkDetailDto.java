@@ -10,5 +10,5 @@ public class UpdateConfigOkDetailDto {
 	private int point;
 	private String activeFlg;
 	private String userName;
-	private String insertFlg;
+	private boolean insertFlg;
 }

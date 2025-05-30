@@ -11,6 +11,10 @@ public class PointConfigDsplDataDto {
 	private int point;
 	private String activeFlg;
 
+	//Jackson対応用
+	public PointConfigDsplDataDto() {
+	}
+
 	public PointConfigDsplDataDto(String pointMasterId, String pointName, String useMethod, int point,
 			String activeFlg) {
 		this.pointMasterId = pointMasterId;
