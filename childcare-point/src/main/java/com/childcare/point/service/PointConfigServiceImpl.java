@@ -14,7 +14,6 @@ import com.childcare.point.entity.PointMaster;
 import com.childcare.point.entity.PointNameMaster;
 import com.childcare.point.repository.PointMasterRepository;
 import com.childcare.point.repository.PointNameMasterRepository;
-import com.childcare.point.service.redis.RedisService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -30,9 +29,6 @@ public class PointConfigServiceImpl {
 
 	@Autowired
 	private PointNameMasterRepository pointNameMasterRepository;
-
-	@Autowired
-	private RedisService redisService;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -50,9 +46,6 @@ public class PointConfigServiceImpl {
 		pointConfigDto.setUserName(userName);
 		pointConfigDto.setPointConfigDsplDataDtoList(pointConfigDsplDataDtoList);
 
-		//redisを使用してインメモリに取得データ保持
-		redisService.saveSessionData("config-data:" + userName, pointConfigDsplDataDtoList);
-
 		return pointConfigDto;
 	}
 
@@ -68,6 +61,7 @@ public class PointConfigServiceImpl {
 	 */
 	@Transactional
 	public String upsertPointConfigData(String userName,
+			List<UpdateConfigOkDetailDto> initDataList,
 			List<UpdateConfigOkDetailDto> upsertDataList) {
 
 		String message = "";
@@ -78,8 +72,8 @@ public class PointConfigServiceImpl {
 			//isInsertable=trueのレコードが対象データ
 			//画面側で行追加した行のみが条件を満たす
 			//POINT_MASTER TBL登録
-			if (upsertDataList.size() > redisService
-					.getData("config-data:" + userName).size()) {
+			if (upsertDataList.size() > initDataList.size()) {
+				//			redisService.getData("config-data:" + userName).size()) {
 
 				System.out.println("000");
 
@@ -128,11 +122,11 @@ public class PointConfigServiceImpl {
 			//redisTemplateからpointConfigDataを取得
 			//取得データとリクエストデータの差分を確認
 			//差分があった場合、対象データを更新
-			List<UpdateConfigOkDetailDto> retrievedUpdateDataList = retreivingUpdateData(userName, upsertDataList);
+			List<UpdateConfigOkDetailDto> retrievedUpdateDataList = retreivingUpdateData(userName, initDataList,
+					upsertDataList);
 
 			if (retrievedUpdateDataList.size() > 0) {
 				System.out.println("r");
-				
 
 				//更新処理を実行
 				//retrievedUpdateDataListは、要素ごとに更新対象のデータのみnull以外の値が格納されているため、null以外のフィールドをset句に追加
@@ -230,15 +224,15 @@ public class PointConfigServiceImpl {
 	 * @return retrievedUpdateDataList
 	 */
 	public List<UpdateConfigOkDetailDto> retreivingUpdateData(String userName,
+			List<UpdateConfigOkDetailDto> initDataList,
 			List<UpdateConfigOkDetailDto> upsertDataList) {
-
-		//直近画面表示データを取得
-		List<PointConfigDsplDataDto> initPointConfigDataList = (List<PointConfigDsplDataDto>) redisService
-				.getData("config-data:" + userName);
+		
+		System.out.println(initDataList.size());
+		System.out.println(upsertDataList.size());
 
 		List<UpdateConfigOkDetailDto> retrievedUpdateDataList = new ArrayList<>();
 
-		for (int i = 0; i < initPointConfigDataList.size(); i++) {
+		for (int i = 0; i < initDataList.size(); i++) {
 			for (int j = 0; j < upsertDataList.size(); j++) {
 
 				if (!Boolean.parseBoolean(upsertDataList.get(i).getIsInsertable())) {
@@ -246,30 +240,29 @@ public class PointConfigServiceImpl {
 
 					//更新対象データチェック
 					//条件分岐によるチェック項目は、更新SQLのset句で使用する
-					if (initPointConfigDataList.get(i).getPointMasterId()
+					if (initDataList.get(i).getPointMasterId()
 							.equals(upsertDataList.get(j).getPointMasterId())) {
 
-						if (!(initPointConfigDataList.get(i).getPointName()
+						if (!(initDataList.get(i).getPointName()
 								.equals(upsertDataList.get(j).getPointName())
 								|| upsertDataList.get(j).getPointName().isBlank())) {
 							updateConfigOkDetailDto.setPointName(
 									upsertDataList.get(j).getPointName());
 							System.out.println("a");
 						}
-						if (initPointConfigDataList.get(i).getPoint() != upsertDataList.get(j).getPoint()
+						if (initDataList.get(i).getPoint() != upsertDataList.get(j).getPoint()
 								&& (upsertDataList.get(j).getPoint() > 0)) {
 							updateConfigOkDetailDto.setPoint(upsertDataList.get(j).getPoint());
 							System.out.println("b");
 						}
-						if (!(initPointConfigDataList.get(i).getUseMethod()
+						if (!(initDataList.get(i).getUseMethod()
 								.equals(upsertDataList.get(j).getUseMethod())
 								|| upsertDataList.get(j).getUseMethod().isBlank())) {
 							updateConfigOkDetailDto.setUseMethod(upsertDataList.get(j).getUseMethod());
 							System.out.println("c");
 						}
-						if (!(initPointConfigDataList.get(i).getActiveFlg()
-								.equals(upsertDataList.get(j).getActiveFlg())
-								|| upsertDataList.get(j).getActiveFlg().isBlank())) {
+						if (!(initDataList.get(i).getActiveFlg()
+								.equals(upsertDataList.get(j).getActiveFlg()))) {
 							updateConfigOkDetailDto.setActiveFlg(upsertDataList.get(j).getActiveFlg());
 							System.out.println("d");
 						}

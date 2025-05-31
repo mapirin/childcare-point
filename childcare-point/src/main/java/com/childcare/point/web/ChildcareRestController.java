@@ -175,10 +175,11 @@ public class ChildcareRestController {
 		System.out.println(updateConfigOkDto.getUserName());
 
 		String userName = updateConfigOkDto.getUserName();
+		List<UpdateConfigOkDetailDto> initDataList = updateConfigOkDto.getInitDataList();
 		List<UpdateConfigOkDetailDto> upsertDataList = updateConfigOkDto.getUpsertDataList();
 
 		//更新処理
-		String message = pointConfigServiceImpl.upsertPointConfigData(userName, upsertDataList);
+		String message = pointConfigServiceImpl.upsertPointConfigData(userName, initDataList, upsertDataList);
 
 		// 検索処理
 		PointConfigDto pointConfigDto = pointConfigServiceImpl.selectPointConfigData(userName);

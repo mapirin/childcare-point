@@ -16,6 +16,8 @@ public class UpdateConfigOkDto {
 	 *フィールド名を「insertPointConfigData/updatePointConfigData」に設定
 	 *また念のため、@JsonPropertyアノテーションでJSONのオブジェクト名を指定
 	 */
+	@JsonProperty("initDataList")
+	private List<UpdateConfigOkDetailDto> initDataList;
 	@JsonProperty("upsertDataList")
 	private List<UpdateConfigOkDetailDto> upsertDataList;
 //	@JsonProperty("updatePointConfigData")

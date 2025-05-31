@@ -125,4 +125,19 @@ public class ChildcarePointController {
 		model.addAttribute("pointConfigDto", pointConfigDto);
 		return "childcarePointMasterConfig";
 	}
+	
+//	/**
+//	 * ポイント設定画面(redis)
+//	 * @param userPointKeyForm
+//	 * @param model
+//	 * @return
+//	 */
+//	@GetMapping("/config/point")
+//	public String showWindowPointConfig(@ModelAttribute("userPointKeyForm") UserPointKeyForm userPointKeyForm,
+//			Model model) {
+//		PointConfigDto pointConfigDto = pointConfigServiceImpl
+//				.selectPointConfigData(userPointKeyForm.getUserName());
+//		model.addAttribute("pointConfigDto", pointConfigDto);
+//		return "childcarePointMasterConfig";
+//	}
 }

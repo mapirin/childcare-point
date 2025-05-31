@@ -11,6 +11,7 @@
 	    </form>
 		<form th:object="${pointConfigDto}" method="post">
 			<input type="hidden" th:field="*{userName}"/>
+	        <input type="hidden" th:field="*{pointConfigDsplDataDtoList}" id="initDataList"/>
 			
 	        <button type="submit" id="masterUpdateOkButton">OK</button>
 	        <button type="button" id="addButton">行追加</button>
@@ -29,15 +30,15 @@
 		                <td><input type="text" th:field="*{pointConfigDsplDataDtoList[__${status.index}__].pointName}"/></td>
 		                <td>
 							<select th:field="*{pointConfigDsplDataDtoList[__${status.index}__].useMethod}">
-								<option value="1">ためる</option>
-								<option value="2">つかう</option>
+								<option value="1" th:selected="${list.useMethod==1}">ためる</option>
+								<option value="2" th:selected="${list.useMethod==2}">つかう</option>
 							</select>
 						</td>
 		                <td><input type="number" th:field="*{pointConfigDsplDataDtoList[__${status.index}__].point}"></td>
 		                <td>
 							<select th:field="*{pointConfigDsplDataDtoList[__${status.index}__].activeFlg}">
-		                		<option value="1">表示</option>
-								<option value="0">非表示</option>
+		                		<option value="1" th:selected="${list.activeFlg==1}">表示</option>
+								<option value="0" th:selected="${list.activeFlg==0}">非表示</option>
 							</select>
 		                </td>
 		            </tr>

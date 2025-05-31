@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
 	const userName = document.querySelector("input[name='userName']").value;
 	const message = document.querySelector('.message');
 
+	const initDataList = document.querySelectorAll("#addTable tr");
+	let apiDataList = [];
 	const addButton = document.getElementById("addButton");
 
 	addButton.addEventListener("click", function() {
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		newRow.innerHTML = `
 	        <td><input type="text" name="pointConfigDsplDataDtoList[${rowCount}].pointMasterId"></td>
 	        <td><input type="text" name="pointConfigDsplDataDtoList[${rowCount}].pointName"></td>
-	        <td>
+	        <td>	
 	            <select name="pointConfigDsplDataDtoList[${rowCount}].useMethod">
 	                <option value="1">ためる</option>
 	                <option value="2">つかう</option>
@@ -42,7 +44,31 @@ document.addEventListener("DOMContentLoaded", function() {
 		event.preventDefault();
 
 		let rows = document.querySelectorAll("#addTable tr");
+		let compareDataList = [];
 		let upsertDataList = [];
+
+		if (apiDataList.length === 0) {
+			initDataList.forEach(item => {
+				let pointMasterId = item.querySelector("td:nth-child(1)").innerText;
+				let pointName = item.querySelector("td:nth-child(2) input").value;
+				let useMethod = item.querySelector("td:nth-child(3) select").value;
+				let point = item.querySelector("td:nth-child(4) input").value;
+				let activeFlg = item.querySelector("td:nth-child(5) select").value;
+				let isInsertable = '0'
+
+				compareDataList.push({
+					pointMasterId: pointMasterId,
+					pointName: pointName,
+					useMethod: useMethod,
+					point: point,
+					activeFlg: activeFlg,
+					userName: userName,
+					isInsertable: isInsertable
+				});
+			});
+		} else if (apiDataList.length > 0) {
+			compareDataList = apiDataList;
+		}
 
 		rows.forEach(row => {
 			let pointMasterId = row.getAttribute("data-added") === "true" ? row.querySelector("td:nth-child(1) input").value : row.querySelector("td:nth-child(1)").innerText;
@@ -63,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			})
 		});
 
+		console.log(compareDataList);
 		console.log(upsertDataList);
 		console.log("start")
 
@@ -73,6 +100,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			},
 			body: JSON.stringify({
 				userName: userName,
+				initDataList: compareDataList,
 				upsertDataList: upsertDataList
 			})
 		})
@@ -97,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	function renderTable(data) {
 		const tableBody = document.getElementById("addTable");
 		tableBody.innerHTML = "";
+		apiDataList = [];
 
 		//第一引数：処理中の要素
 		//第二引数：処理中のインデックス(0->n)
@@ -110,20 +139,32 @@ document.addEventListener("DOMContentLoaded", function() {
 			        <td><input type="text" name="pointConfigDsplDataDtoList[${index}].pointName" value="${item.pointName}"></td>
 			        <td>
 			            <select name="pointConfigDsplDataDtoList[${index}].useMethod" value="${item.useMethod}">
-			                <option value="1">ためる</option>
-			                <option value="2">つかう</option>
+			                <option value="1" selected="${item.useMethod == 1}">ためる</option>
+			                <option value="2" selected="${item.useMethod == 2}">つかう</option>
 			            </select>
 			        </td>
 			        <td><input type="number" name="pointConfigDsplDataDtoList[${index}].point" value="${item.point}"></td>
 			        <td>
 			            <select name="pointConfigDsplDataDtoList[${index}].activeFlg" value="${item.activeFlg}">
-			                <option value="1">表示</option>
-			                <option value="0">非表示</option>
+			                <option value="1" selected="${item.activeFlg == 1}">表示</option>
+			                <option value="0" selected="${item.activeFlg == 0}">非表示</option>
 			            </select>
 			        </td>
 				</tr>
 		    `;
 			tableBody.innerHTML += row;
+
+			apiDataList.push({
+				pointMasterId: item.pointMasterId,
+				pointName: item.pointName,
+				useMethod: item.useMethod,
+				point: item.point,
+				activeFlg: item.activeFlg,
+				userName: item.userName,
+				isInsertable: '0'
+			});
 		})
+
+
 	}
 });
