@@ -51,9 +51,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			initDataList.forEach(item => {
 				let pointMasterId = item.querySelector("td:nth-child(1)").innerText;
 				let pointName = item.querySelector("td:nth-child(2) input").value;
-				let useMethod = item.querySelector("td:nth-child(3) select").value;
+				let useMethod = item.querySelector("td:nth-child(3) select").getAttribute("data-value");
 				let point = item.querySelector("td:nth-child(4) input").value;
-				let activeFlg = item.querySelector("td:nth-child(5) select").value;
+				let activeFlg = item.querySelector("td:nth-child(5) select").getAttribute("data-value");
 				let isInsertable = '0'
 
 				compareDataList.push({
@@ -138,16 +138,16 @@ document.addEventListener("DOMContentLoaded", function() {
 					<td>${item.pointMasterId}</td>
 			        <td><input type="text" name="pointConfigDsplDataDtoList[${index}].pointName" value="${item.pointName}"></td>
 			        <td>
-			            <select name="pointConfigDsplDataDtoList[${index}].useMethod" value="${item.useMethod}">
-			                <option value="1" selected="${item.useMethod == 1}">ためる</option>
-			                <option value="2" selected="${item.useMethod == 2}">つかう</option>
+			            <select name="pointConfigDsplDataDtoList[${index}].useMethod" data-value="${item.useMethod}">
+			                <option value="1">ためる</option>
+			                <option value="2">つかう</option>
 			            </select>
 			        </td>
 			        <td><input type="number" name="pointConfigDsplDataDtoList[${index}].point" value="${item.point}"></td>
 			        <td>
-			            <select name="pointConfigDsplDataDtoList[${index}].activeFlg" value="${item.activeFlg}">
-			                <option value="1" selected="${item.activeFlg == 1}">表示</option>
-			                <option value="0" selected="${item.activeFlg == 0}">非表示</option>
+			            <select name="pointConfigDsplDataDtoList[${index}].activeFlg" data-value="${item.activeFlg}">
+			                <option value="1">表示</option>
+			                <option value="0">非表示</option>
 			            </select>
 			        </td>
 				</tr>
