@@ -11,6 +11,12 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @Configuration
 @EnableRedisHttpSession
 public class RedisConfig {
+//
+//	@Bean
+//    public RedisConnectionFactory redisConnectionFactory() {
+//        String redisUrl = System.getenv("REDIS_URL"); // 環境変数から取得
+//        return new LettuceConnectionFactory(redisUrl);
+//    }
 
 	@Bean
 	RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
