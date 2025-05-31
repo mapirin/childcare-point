@@ -178,10 +178,12 @@ public class ChildcareRestController {
 		List<UpdateConfigOkDetailDto> upsertDataList = updateConfigOkDto.getUpsertDataList();
 
 		//更新処理
-		pointConfigServiceImpl.upsertPointConfigData(userName, upsertDataList);
+		String message = pointConfigServiceImpl.upsertPointConfigData(userName, upsertDataList);
 
 		// 検索処理
 		PointConfigDto pointConfigDto = pointConfigServiceImpl.selectPointConfigData(userName);
+
+		pointConfigDto.setMessage(message);
 
 		return ResponseEntity.ok(pointConfigDto);
 	}

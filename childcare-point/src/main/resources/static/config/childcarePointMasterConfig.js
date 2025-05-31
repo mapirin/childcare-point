@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 
 		console.log(upsertDataList);
+		console.log("start")
 
 		fetch("/api/config/update", {
 			method: "POST",
@@ -83,10 +84,46 @@ document.addEventListener("DOMContentLoaded", function() {
 				return response.json();
 			})
 			.then(data => {
-				//TODO 取得データをhtmlにバインド
-//				point = data;
-				message.innerText = "更新しました。";
+				console.log(data.pointConfigDsplDataDtoList);
+
+				//ここでリストを渡すことでレンダリング処理に使用するデータのみを処理対象とする
+				renderTable(data.pointConfigDsplDataDtoList);
+				message.innerText = data.message;
+
 				console.log("end")
 			})
 	});
+
+	function renderTable(data) {
+		const tableBody = document.getElementById("addTable");
+		tableBody.innerHTML = "";
+
+		//第一引数：処理中の要素
+		//第二引数：処理中のインデックス(0->n)
+		//thymeleafのフォームに含めたい場合はname属性を使用
+		//単純な埋め込みテキストとして使用する場合は$でそのままレンダリング
+		data.forEach((item, index) => {
+			const row =
+				`
+				<tr data-added="false">
+					<td>${item.pointMasterId}</td>
+			        <td><input type="text" name="pointConfigDsplDataDtoList[${index}].pointName" value="${item.pointName}"></td>
+			        <td>
+			            <select name="pointConfigDsplDataDtoList[${index}].useMethod" value="${item.useMethod}">
+			                <option value="1">ためる</option>
+			                <option value="2">つかう</option>
+			            </select>
+			        </td>
+			        <td><input type="number" name="pointConfigDsplDataDtoList[${index}].point" value="${item.point}"></td>
+			        <td>
+			            <select name="pointConfigDsplDataDtoList[${index}].activeFlg" value="${item.activeFlg}">
+			                <option value="1">表示</option>
+			                <option value="0">非表示</option>
+			            </select>
+			        </td>
+				</tr>
+		    `;
+			tableBody.innerHTML += row;
+		})
+	}
 });

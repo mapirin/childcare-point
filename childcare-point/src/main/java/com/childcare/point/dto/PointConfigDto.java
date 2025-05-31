@@ -9,4 +9,5 @@ public class PointConfigDto {
 
 	private String userName;
 	private List<PointConfigDsplDataDto> pointConfigDsplDataDtoList;
+	private String message;
 }

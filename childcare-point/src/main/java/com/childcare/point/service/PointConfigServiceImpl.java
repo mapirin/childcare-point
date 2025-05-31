@@ -67,8 +67,10 @@ public class PointConfigServiceImpl {
 	 * @return
 	 */
 	@Transactional
-	public boolean upsertPointConfigData(String userName,
+	public String upsertPointConfigData(String userName,
 			List<UpdateConfigOkDetailDto> upsertDataList) {
+
+		String message = "";
 
 		if (upsertDataList != null) {
 
@@ -82,32 +84,41 @@ public class PointConfigServiceImpl {
 				System.out.println("000");
 
 				for (int i = 0; i < upsertDataList.size(); i++) {
-					System.out.println(i);
-					System.out.println(Boolean.parseBoolean(upsertDataList.get(i).getIsInsertable()));
-
 					if (Boolean.parseBoolean(upsertDataList.get(i).getIsInsertable())) {
 
-						System.out.println("111");
+						//エラーチェック
+						if (upsertDataList.get(i).getPointMasterId().isEmpty()) {
+							System.err.println("pointMasterId is empty");
+							message = "1:ポイントIDが入力されていません。";
+							return message;
+						}
+						if (upsertDataList.get(i).getPoint() == 0) {
+							System.err.println("point is 0");
+							message = "2:ポイントが入力されていません。";
+							return message;
+						}
 
-						PointMaster pointMaster = new PointMaster();
-						pointMaster.setPointMasterId(upsertDataList.get(i).getPointMasterId());
-						pointMaster.setPoint(upsertDataList.get(i).getPoint());
-						pointMaster.setUseMethod(upsertDataList.get(i).getUseMethod());
-						pointMaster.setActiveFlg(upsertDataList.get(i).getActiveFlg());
-						pointMaster.setUpdateUserId(upsertDataList.get(i).getUserName());
+						try {
+							PointMaster pointMaster = new PointMaster();
+							pointMaster.setPointMasterId(upsertDataList.get(i).getPointMasterId());
+							pointMaster.setPoint(upsertDataList.get(i).getPoint());
+							pointMaster.setUseMethod(upsertDataList.get(i).getUseMethod());
+							pointMaster.setActiveFlg(upsertDataList.get(i).getActiveFlg());
+							pointMaster.setUpdateUserId(upsertDataList.get(i).getUserName());
 
-						System.out.println(pointMaster);
+							pointMasterRepository.save(pointMaster);
 
-						pointMasterRepository.save(pointMaster);
+							//POINT_NAME_MASTER TBL登録
+							PointNameMaster pointNameMaster = new PointNameMaster();
+							pointNameMaster.setPointNameMasterId(upsertDataList.get(i).getPointMasterId());
+							pointNameMaster.setPointName(upsertDataList.get(i).getPointName());
 
-						//POINT_NAME_MASTER TBL登録
-						PointNameMaster pointNameMaster = new PointNameMaster();
-						pointNameMaster.setPointNameMasterId(upsertDataList.get(i).getPointMasterId());
-						pointNameMaster.setPointName(upsertDataList.get(i).getPointName());
-
-						System.out.println(pointNameMaster);
-
-						pointNameMasterRepository.save(pointNameMaster);
+							pointNameMasterRepository.save(pointNameMaster);
+						} catch (Exception e) {
+							System.err.println(e.getMessage());
+							message = "	登録できませんでした。";
+							return message;
+						}
 					}
 				}
 			}
@@ -118,7 +129,9 @@ public class PointConfigServiceImpl {
 			//差分があった場合、対象データを更新
 			List<UpdateConfigOkDetailDto> retrievedUpdateDataList = retreivingUpdateData(userName, upsertDataList);
 
-			if (retrievedUpdateDataList != null) {
+			if (retrievedUpdateDataList.size() > 0) {
+				System.out.println("r");
+				
 
 				//更新処理を実行
 				//retrievedUpdateDataListは、要素ごとに更新対象のデータのみnull以外の値が格納されているため、null以外のフィールドをset句に追加
@@ -172,28 +185,37 @@ public class PointConfigServiceImpl {
 							System.out.println(execCount);
 
 						} catch (Exception e) {
-							System.out.println(e.getMessage());
-							return false;
+							System.err.println(e.getMessage());
+							message = "更新できませんでした。";
+							return message;
 						}
 
-					} else if (isUpdatableName) {
+					}
+					if (isUpdatableName) {
 
 						//POINT_NAME_MASTER
-						updatePointNameMaster.where(cbPointNameMaster.equal(rootPointNameMaster.get("pointNameMasterId"),
-								retrievedUpdateDataList.get(i).getPointMasterId()));
+						updatePointNameMaster
+								.where(cbPointNameMaster.equal(rootPointNameMaster.get("pointNameMasterId"),
+										retrievedUpdateDataList.get(i).getPointMasterId()));
 						try {
 							execCount = entityManager.createQuery(updatePointNameMaster).executeUpdate();
 							System.out.println(execCount);
 
 						} catch (Exception e) {
-							System.out.println(e.getMessage());
-							return false;
+							System.err.println(e.getMessage());
+							message = "更新できませんでした。";
+							return message;
 						}
 					}
 				}
+			} else if (retrievedUpdateDataList.size() == 0) {
+				message = "更新件数は0件です。";
+				return message;
 			}
 		}
-		return true;
+
+		message = "更新しました。";
+		return message;
 	}
 
 	/**
@@ -226,21 +248,29 @@ public class PointConfigServiceImpl {
 					if (initPointConfigDataList.get(i).getPointMasterId()
 							.equals(upsertDataList.get(j).getPointMasterId())) {
 
-						if (!initPointConfigDataList.get(i).getPointName()
-								.equals(upsertDataList.get(j).getPointName())) {
+						if (!(initPointConfigDataList.get(i).getPointName()
+								.equals(upsertDataList.get(j).getPointName())
+								|| upsertDataList.get(j).getPointName().isBlank())) {
 							updateConfigOkDetailDto.setPointName(
 									upsertDataList.get(j).getPointName());
+							System.out.println("a");
 						}
-						if (initPointConfigDataList.get(i).getPoint() != upsertDataList.get(j).getPoint()) {
+						if (initPointConfigDataList.get(i).getPoint() != upsertDataList.get(j).getPoint()
+								&& (upsertDataList.get(j).getPoint() > 0)) {
 							updateConfigOkDetailDto.setPoint(upsertDataList.get(j).getPoint());
+							System.out.println("b");
 						}
-						if (!initPointConfigDataList.get(i).getUseMethod()
-								.equals(upsertDataList.get(j).getUseMethod())) {
+						if (!(initPointConfigDataList.get(i).getUseMethod()
+								.equals(upsertDataList.get(j).getUseMethod())
+								|| upsertDataList.get(j).getUseMethod().isBlank())) {
 							updateConfigOkDetailDto.setUseMethod(upsertDataList.get(j).getUseMethod());
+							System.out.println("c");
 						}
-						if (!initPointConfigDataList.get(i).getActiveFlg()
-								.equals(upsertDataList.get(j).getActiveFlg())) {
+						if (!(initPointConfigDataList.get(i).getActiveFlg()
+								.equals(upsertDataList.get(j).getActiveFlg())
+								|| upsertDataList.get(j).getActiveFlg().isBlank())) {
 							updateConfigOkDetailDto.setActiveFlg(upsertDataList.get(j).getActiveFlg());
+							System.out.println("d");
 						}
 
 						// 更新SQLのwhere句で使用するpointMasterId
