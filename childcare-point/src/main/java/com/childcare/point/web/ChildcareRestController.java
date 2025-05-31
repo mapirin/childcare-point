@@ -176,7 +176,6 @@ public class ChildcareRestController {
 
 		String userName = updateConfigOkDto.getUserName();
 		List<UpdateConfigOkDetailDto> upsertDataList = updateConfigOkDto.getUpsertDataList();
-		//		List<UpdateConfigOkDetailDto> updatePointConfigData = updateConfigOkDto.getUpdatePointConfigData();
 
 		//更新処理
 		pointConfigServiceImpl.upsertPointConfigData(userName, upsertDataList);

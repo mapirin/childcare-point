@@ -45,12 +45,12 @@ document.addEventListener("DOMContentLoaded", function() {
 		let upsertDataList = [];
 
 		rows.forEach(row => {
-			let pointMasterId = row.querySelector("td:nth-child(1)").innerText;
+			let pointMasterId = row.getAttribute("data-added") === "true" ? row.querySelector("td:nth-child(1) input").value : row.querySelector("td:nth-child(1)").innerText;
 			let pointName = row.querySelector("td:nth-child(2) input").value;
 			let useMethod = row.querySelector("td:nth-child(3) select").value;
 			let point = row.querySelector("td:nth-child(4) input").value;
 			let activeFlg = row.querySelector("td:nth-child(5) select").value;
-			let insertFlg = row.getAttribute("data-added");
+			let isInsertable = row.getAttribute("data-added");
 
 			upsertDataList.push({
 				pointMasterId: pointMasterId,
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				point: point,
 				activeFlg: activeFlg,
 				userName: userName,
-				insertFlg: insertFlg
+				isInsertable: isInsertable
 			})
 		});
 
@@ -84,9 +84,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			})
 			.then(data => {
 				//TODO 取得データをhtmlにバインド
-				console.log("start")
-				point = data;
-				message.innerText = "使いました。";
+//				point = data;
+				message.innerText = "更新しました。";
+				console.log("end")
 			})
 	});
 });
