@@ -99,6 +99,7 @@ public class PointConfigServiceImpl {
 						}
 
 						try {
+							//POINT_MASTER TBL登録
 							PointMaster pointMaster = new PointMaster();
 							pointMaster.setPointMasterId(upsertDataList.get(i).getPointMasterId());
 							pointMaster.setPoint(upsertDataList.get(i).getPoint());
