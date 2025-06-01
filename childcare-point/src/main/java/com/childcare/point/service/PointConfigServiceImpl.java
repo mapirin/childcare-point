@@ -253,13 +253,16 @@ public class PointConfigServiceImpl {
 								.equals(upsertDataList.get(j).getPointName())) {
 							updateConfigOkDetailDto.setPointName(
 									upsertDataList.get(j).getPointName());
-						} else if (upsertDataList.get(j).getPointName().isBlank()) {
+						} else if ((!initDataList.get(i).getPointName()
+								.equals(upsertDataList.get(j).getPointName()))
+								&& upsertDataList.get(j).getPointName().isEmpty()) {
 							return new ArrayList<>();
 						}
 						if (initDataList.get(i).getPoint() != upsertDataList.get(j).getPoint()
 								&& (upsertDataList.get(j).getPoint() > 0)) {
 							updateConfigOkDetailDto.setPoint(upsertDataList.get(j).getPoint());
-						} else if (upsertDataList.get(j).getPoint() <= 0) {
+						} else if (initDataList.get(i).getPoint() != upsertDataList.get(j).getPoint()
+								&& upsertDataList.get(j).getPoint() <= 0) {
 							return new ArrayList<>();
 						}
 						if (!(initDataList.get(i).getUseMethod()

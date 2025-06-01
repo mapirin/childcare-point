@@ -139,15 +139,15 @@ document.addEventListener("DOMContentLoaded", function() {
 			        <td><input type="text" name="pointConfigDsplDataDtoList[${index}].pointName" value="${item.pointName}"></td>
 			        <td>
 			            <select name="pointConfigDsplDataDtoList[${index}].useMethod" data-value="${item.useMethod}">
-			                <option value="1">ためる</option>
-			                <option value="2">つかう</option>
+			                <option value="1" selected="${item.useMethod=='1'}">ためる</option>
+			                <option value="2" selected="${item.useMethod=='2'}">つかう</option>
 			            </select>
 			        </td>
 			        <td><input type="number" name="pointConfigDsplDataDtoList[${index}].point" value="${item.point}"></td>
 			        <td>
 			            <select name="pointConfigDsplDataDtoList[${index}].activeFlg" data-value="${item.activeFlg}">
-			                <option value="1">表示</option>
-			                <option value="0">非表示</option>
+			                <option value="1" selected="${item.activeFlg=='1'}">表示</option>
+			                <option value="0" selected="${item.activeFlg=='0'}">非表示</option>
 			            </select>
 			        </td>
 				</tr>
@@ -164,7 +164,12 @@ document.addEventListener("DOMContentLoaded", function() {
 				isInsertable: '0'
 			});
 		})
-
+		
+		//fetchで取得したデータでDOM要素を再描画後、
+		//select要素のみを抽出し、各セレクトボックスのdata-valueにセット
+		document.querySelectorAll("select").forEach(item=>{
+			item.value = item.getAttribute("data-value");
+		})
 
 	}
 });
