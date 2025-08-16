@@ -20,8 +20,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class PointConfigServiceImpl {
 
 	@Autowired
@@ -45,6 +47,7 @@ public class PointConfigServiceImpl {
 		PointConfigDto pointConfigDto = new PointConfigDto();
 		pointConfigDto.setUserName(userName);
 		pointConfigDto.setPointConfigDsplDataDtoList(pointConfigDsplDataDtoList);
+		log.info("データ取得件数：" + pointConfigDsplDataDtoList.size());
 
 		return pointConfigDto;
 	}
@@ -75,25 +78,28 @@ public class PointConfigServiceImpl {
 			if (upsertDataList.size() > initDataList.size()) {
 				//			redisService.getData("config-data:" + userName).size()) {
 
-				System.out.println("000");
+				log.debug("000");
 
 				for (int i = 0; i < upsertDataList.size(); i++) {
 					if (Boolean.parseBoolean(upsertDataList.get(i).getIsInsertable())) {
 
 						//エラーチェック
 						if (upsertDataList.get(i).getPointMasterId().isEmpty()) {
-							System.err.println("pointMasterId is empty");
+							log.error("pointMasterId is empty");
 							message = "ポイントIDが入力されていません。";
+							log.error(message);
 							return message;
 						}
 						if (upsertDataList.get(i).getPointName().isEmpty()) {
-							System.err.println("pointName is empty");
+							log.error("pointName is empty");
 							message = "ポイント名が入力されていません。";
+							log.error(message);
 							return message;
 						}
 						if (upsertDataList.get(i).getPoint() == 0) {
-							System.err.println("point is 0");
+							log.error("point is 0");
 							message = "ポイントが入力されていません。";
+							log.error(message);
 							return message;
 						}
 
@@ -116,8 +122,9 @@ public class PointConfigServiceImpl {
 
 							pointNameMasterRepository.save(pointNameMaster);
 						} catch (Exception e) {
-							System.err.println(e.getMessage());
+							log.error(e.getMessage());
 							message = "	登録できませんでした。";
+							log.error(message);
 							return message;
 						}
 					}
@@ -132,8 +139,7 @@ public class PointConfigServiceImpl {
 					upsertDataList);
 
 			if (retrievedUpdateDataList.size() > 0) {
-				System.out.println("r");
-
+				
 				//更新処理を実行
 				//retrievedUpdateDataListは、要素ごとに更新対象のデータのみnull以外の値が格納されているため、null以外のフィールドをset句に追加
 				//1つでもset句にフィールドが設定された場合、更新対象の変数はtrueとなり更新処理を実行する
@@ -183,11 +189,12 @@ public class PointConfigServiceImpl {
 								retrievedUpdateDataList.get(i).getPointMasterId()));
 						try {
 							execCount = entityManager.createQuery(updatePointMaster).executeUpdate();
-							System.out.println(execCount);
+							log.debug(String.valueOf(execCount));
 
 						} catch (Exception e) {
-							System.err.println(e.getMessage());
+							log.error(e.getMessage());
 							message = "更新できませんでした。";
+							log.error(message);
 							return message;
 						}
 
@@ -200,22 +207,25 @@ public class PointConfigServiceImpl {
 										retrievedUpdateDataList.get(i).getPointMasterId()));
 						try {
 							execCount = entityManager.createQuery(updatePointNameMaster).executeUpdate();
-							System.out.println(execCount);
+							log.debug(String.valueOf(execCount));
 
 						} catch (Exception e) {
-							System.err.println(e.getMessage());
+							log.error(e.getMessage());
 							message = "更新できませんでした。";
+							log.error(message);
 							return message;
 						}
 					}
 				}
 			} else if (retrievedUpdateDataList.size() == 0) {
 				message = "更新件数は0件です。";
+				log.info(message);
 				return message;
 			}
 		}
 
 		message = "更新しました。";
+		log.info(message);
 		return message;
 	}
 
@@ -233,8 +243,8 @@ public class PointConfigServiceImpl {
 			List<UpdateConfigOkDetailDto> initDataList,
 			List<UpdateConfigOkDetailDto> upsertDataList) {
 
-		System.out.println(initDataList.size());
-		System.out.println(upsertDataList.size());
+		log.debug(String.valueOf(initDataList.size()));
+		log.debug(String.valueOf(upsertDataList.size()));
 
 		List<UpdateConfigOkDetailDto> retrievedUpdateDataList = new ArrayList<>();
 

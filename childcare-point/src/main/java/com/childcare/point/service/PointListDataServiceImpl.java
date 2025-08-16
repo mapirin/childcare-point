@@ -15,7 +15,10 @@ import com.childcare.point.entity.UserPoint;
 import com.childcare.point.repository.PointListRepository;
 import com.childcare.point.repository.UserPointRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class PointListDataServiceImpl {
 
 	@Autowired

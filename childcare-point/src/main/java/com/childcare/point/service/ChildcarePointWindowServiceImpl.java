@@ -18,7 +18,10 @@ import com.childcare.point.repository.PointListRepository;
 import com.childcare.point.repository.PointMasterRepository;
 import com.childcare.point.repository.UserPointRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class ChildcarePointWindowServiceImpl {
 
 	private final String USE_METHOD_STOCK = "1";
@@ -56,7 +59,7 @@ public class ChildcarePointWindowServiceImpl {
 
 		return stockAndUseWindowDto;
 	}
-	
+
 	/**
 	 * 「つかう」画面の描画用データ取得用処理
 	 */
@@ -81,7 +84,7 @@ public class ChildcarePointWindowServiceImpl {
 		//recordIdとupdateTimestampを生成
 		String recordId = String.valueOf(System.currentTimeMillis());
 		LocalDateTime updateTimestamp = LocalDateTime.now();
-		
+
 		String userName = updateOkDto.getUserName();
 		int addPoint = updateOkDto.getCurrentPoint();
 		List<UpdateOkDetailDto> pointDataList = updateOkDto.getPointData();
@@ -93,15 +96,15 @@ public class ChildcarePointWindowServiceImpl {
 		 */
 		for (int i = 0; i < pointDataList.size(); i++) {
 			addPoint = addPoint + pointDataList.get(i).getPoint();
-			
+
 			//USER_POINT TBL用のBEANにデータ設定
 			UserPoint userPoint = new UserPoint();
 			userPoint.setUserName(userName);
 			userPoint.setPoint(pointDataList.get(i).getPoint());
 			userPoint.setUpdateTimestamp(updateTimestamp);
-			
-			System.out.println(pointDataList.get(i).getPointId());
-			System.out.println(pointDataList.get(i).getPoint());
+
+			log.debug(pointDataList.get(i).getPointId());
+			log.debug(String.valueOf(pointDataList.get(i).getPoint()));
 
 			updateUserPoint(userPoint);
 
@@ -115,26 +118,6 @@ public class ChildcarePointWindowServiceImpl {
 
 			insertPointList(pointList);
 		}
-
-//		//USER_POINT TBL用のBEANにデータ設定
-//		UserPoint userPoint = new UserPoint();
-//		userPoint.setUserName(userPointDto.getUserName());
-//		userPoint.setPoint(userPointDto.getPoint());
-//		userPoint.setUpdateTimestamp(updateTimestamp);
-//		
-//		System.out.println(userPointDto.getPoint());
-//
-//		updateUserPoint(userPoint);
-//
-//		//POINT_LIST TBL用のBEANにデータ設定
-//		PointList pointList = new PointList();
-//		pointList.setRecordId(recordId);
-//		pointList.setUserName(userPointDto.getUserName());
-//		pointList.setPointId(userPointDto.getPointId());
-//		pointList.setPoint(userPointDto.getPoint());
-//		pointList.setUpdateTimestamp(updateTimestamp);
-//
-//		insertPointList(pointList);
 	}
 
 	/*

@@ -21,8 +21,11 @@ import com.childcare.point.service.ChildcarePointWindowServiceImpl;
 import com.childcare.point.service.PointConfigServiceImpl;
 import com.childcare.point.service.PointListDataServiceImpl;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class ChildcareRestController {
 
 	@Autowired
@@ -150,7 +153,7 @@ public class ChildcareRestController {
 	@PostMapping("/update")
 	public ResponseEntity<Integer> updateUseOk(@RequestBody UpdateOkDto updateOkDto) {
 
-		System.out.println(updateOkDto.getCurrentPoint());
+		log.debug(String.valueOf(updateOkDto.getCurrentPoint()));
 
 		String userName = updateOkDto.getUserName();
 
@@ -172,7 +175,7 @@ public class ChildcareRestController {
 	@PostMapping("/config/update")
 	public ResponseEntity<PointConfigDto> updateConfigOk(@RequestBody UpdateConfigOkDto updateConfigOkDto) {
 
-		System.out.println(updateConfigOkDto.getUserName());
+		log.debug(updateConfigOkDto.getUserName());
 
 		String userName = updateConfigOkDto.getUserName();
 		List<UpdateConfigOkDetailDto> initDataList = updateConfigOkDto.getInitDataList();
